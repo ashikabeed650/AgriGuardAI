@@ -142,7 +142,7 @@
 </div>
 
 <script>
-  const API_URL = "https://antacid-handed-chooser.ngrok-free.dev/predict";
+  const API_URL = "https://agriguardai-0i4q.onrender.com/predict";
 
   const imageInput = document.getElementById("imageInput");
   const preview = document.getElementById("preview");
@@ -182,6 +182,7 @@
 
     submitBtn.disabled = true;
     loading.style.display = "block";
+    loading.textContent = "🔍 Analyzing image... (first request may take up to a minute)";
 
     try {
       const response = await fetch(API_URL, {
@@ -204,7 +205,7 @@
 
       resultBox.style.display = "block";
     } catch (err) {
-      errorBox.textContent = "Error: " + err.message + " (Is the backend running on port 5000?)";
+      errorBox.textContent = "Error: " + err.message + " (server may be waking up, try again in a moment)";
       errorBox.style.display = "block";
     } finally {
       submitBtn.disabled = false;
