@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AgriGuard AI - Crop Disease Detection</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f7f4;
+    color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .container {
+    background: #ffffff;
+    max-width: 480px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 32px;
+  }
+  h1 {
+    font-size: 22px;
+    color: #2e7d32;
+    margin-bottom: 4px;
+  }
+  p.subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+  select, input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  #preview {
+    margin-top: 16px;
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: none;
+  }
+  button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover { background: #256428; }
+  button:disabled { background: #999; cursor: not-allowed; }
+
+  #result {
+    margin-top: 24px;
+    display: none;
+  }
+  .result-card {
+    padding: 16px;
+    border-radius: 8px;
+    background: #f1f8f1;
+    border-left: 4px solid #2e7d32;
+  }
+  .result-card.disease {
+    background: #fdf1f1;
+    border-left-color: #c62828;
+  }
+  .disease-name {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .confidence {
+    font-size: 13px;
+    color: #555;
+    margin-top: 4px;
+  }
+  .treatment {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  #error {
+    color: #c62828;
+    margin-top: 12px;
+    font-size: 14px;
+    display: none;
+  }
+  #loading {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #666;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🌿 AgriGuard AI</h1>
+  <p class="subtitle">Upload a leaf photo to detect disease and get treatment advice</p>
+
+  <label for="cropType">Select Crop</label>
+  <select id="cropType">
+    <option value="Tomato">Tomato</option>
+    <option value="Potato">Potato</option>
+  </select>
+
+  <label for="imageInput">Upload Leaf Photo</label>
+  <input type="file" id="imageInput" accept="image/*">
+
+  <img id="preview" alt="Preview">
+
+  <button id="submitBtn">Analyze Leaf</button>
+
+  <div id="loading">🔍 Analyzing image...</div>
+  <div id="error"></div>
+
+  <div id="result">
+    <div class="result-card" id="resultCard">
+      <div class="disease-name" id="diseaseName"></div>
+      <div class="confidence" id="confidenceText"></div>
+      <div class="treatment" id="treatmentText"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_URL = "https://antacid-handed-chooser.ngrok-free.dev/predict";
+
+  const imageInput = document.getElementById("imageInput");
+  const preview = document.getElementById("preview");
+  const submitBtn = document.getElementById("submitBtn");
+  const loading = document.getElementById("loading");
+  const errorBox = document.getElementById("error");
+  const resultBox = document.getElementById("result");
+  const resultCard = document.getElementById("resultCard");
+  const diseaseName = document.getElementById("diseaseName");
+  const confidenceText = document.getElementById("confidenceText");
+  const treatmentText = document.getElementById("treatmentText");
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    }
+  });
+
+  submitBtn.addEventListener("click", async () => {
+    const file = imageInput.files[0];
+    const cropType = document.getElementById("cropType").value;
+
+    errorBox.style.display = "none";
+    resultBox.style.display = "none";
+
+    if (!file) {
+      errorBox.textContent = "Please select an image first.";
+      errorBox.style.display = "block";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("crop_type", cropType);
+
+    submitBtn.disabled = true;
+    loading.style.display = "block";
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      const isHealthy = data.disease.toLowerCase().includes("healthy");
+      resultCard.className = isHealthy ? "result-card" : "result-card disease";
+
+      diseaseName.textContent = data.disease.replace(/___/g, " - ").replace(/_/g, " ");
+      confidenceText.textContent = `Confidence: ${data.confidence}%`;
+      treatmentText.textContent = data.treatment;
+
+      resultBox.style.display = "block";
+    } catch (err) {
+      errorBox.textContent = "Error: " + err.message + " (Is the backend running on port 5000?)";
+      errorBox.style.display = "block";
+    } finally {
+      submitBtn.disabled = false;
+      loading.style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>
