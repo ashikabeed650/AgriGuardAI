@@ -113,7 +113,7 @@
 <body>
 
 <div class="container">
-  <h1>🌿 AgriGuard AI</h1>
+  <h1>AgriGuard AI</h1>
   <p class="subtitle">Upload a leaf photo to detect disease and get treatment advice</p>
 
   <label for="cropType">Select Crop</label>
@@ -129,7 +129,7 @@
 
   <button id="submitBtn">Analyze Leaf</button>
 
-  <div id="loading">🔍 Analyzing image...</div>
+  <div id="loading">Analyzing image, please wait...</div>
   <div id="error"></div>
 
   <div id="result">
@@ -182,7 +182,6 @@
 
     submitBtn.disabled = true;
     loading.style.display = "block";
-    loading.textContent = "🔍 Analyzing image... (first request may take up to a minute)";
 
     try {
       const response = await fetch(API_URL, {
@@ -200,12 +199,12 @@
       resultCard.className = isHealthy ? "result-card" : "result-card disease";
 
       diseaseName.textContent = data.disease.replace(/___/g, " - ").replace(/_/g, " ");
-      confidenceText.textContent = `Confidence: ${data.confidence}%`;
+      confidenceText.textContent = "Confidence: " + data.confidence + "%";
       treatmentText.textContent = data.treatment;
 
       resultBox.style.display = "block";
     } catch (err) {
-      errorBox.textContent = "Error: " + err.message + " (server may be waking up, try again in a moment)";
+      errorBox.textContent = "Error: " + err.message;
       errorBox.style.display = "block";
     } finally {
       submitBtn.disabled = false;
