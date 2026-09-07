@@ -59,7 +59,7 @@ def predict_tflite(img_array):
 
 @app.route('/', methods=['GET'])
 def home():
-    return jsonify({"message": "AgriGuard AI backend is running"})
+    return send_from_directory('.', 'home.html')
 
 @app.route('/app')
 def serve_frontend():
