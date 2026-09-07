@@ -57,6 +57,17 @@ def predict_tflite(img_array):
     output = interpreter.get_tensor(output_details[0]['index'])
     return output[0]
 
+def looks_like_leaf(img_array):
+    """Basic heuristic: leaves are predominantly green.
+    Uses Excess Green Index (ExG = 2G - R - B) to estimate plant-like content."""
+    img = img_array[0] * 255.0  # back to 0-255 scale
+    r = img[:, :, 0]
+    g = img[:, :, 1]
+    b = img[:, :, 2]
+    exg = 2 * g - r - b
+    green_pixel_ratio = np.mean(exg > 15)
+    return green_pixel_ratio > 0.12  # at least 12% of pixels look plant-like
+
 @app.route('/', methods=['GET'])
 def home():
     return send_from_directory('.', 'home.html')
@@ -82,10 +93,18 @@ def predict():
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
-    prediction = predict_tflite(img_array)
     os.remove(temp_path)
 
-    # Compute raw probability mass for each crop BEFORE filtering
+    # Step 1: Check if this even looks like a plant/leaf
+    if not looks_like_leaf(img_array):
+        return jsonify({
+            "error": "not_a_leaf",
+            "message": "This doesn't look like a plant leaf photo. Please upload a clear photo of a tomato or potato leaf."
+        }), 200
+
+    prediction = predict_tflite(img_array)
+
+    # Step 2: Compute raw probability mass for each crop BEFORE filtering
     crop_mass = {}
     for crop, indices in crop_class_indices.items():
         crop_mass[crop] = float(sum(prediction[i] for i in indices))
@@ -103,7 +122,7 @@ def predict():
             "detected_crop_guess": other_crop
         }), 200
 
-    # Otherwise, proceed as normal within the selected crop's classes
+    # Step 3: Proceed as normal within the selected crop's classes
     relevant_indices = crop_class_indices[crop_type]
     relevant_probs = {class_names[i]: float(prediction[i]) for i in relevant_indices}
 
