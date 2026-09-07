@@ -83,7 +83,27 @@ def predict():
     img_array = np.expand_dims(img_array, axis=0)
 
     prediction = predict_tflite(img_array)
+    os.remove(temp_path)
 
+    # Compute raw probability mass for each crop BEFORE filtering
+    crop_mass = {}
+    for crop, indices in crop_class_indices.items():
+        crop_mass[crop] = float(sum(prediction[i] for i in indices))
+
+    selected_mass = crop_mass[crop_type]
+    other_crop = [c for c in crop_class_indices if c != crop_type][0]
+    other_mass = crop_mass[other_crop]
+
+    # If the OTHER crop scores clearly higher, this photo likely isn't the selected crop
+    if other_mass > selected_mass:
+        return jsonify({
+            "error": "crop_mismatch",
+            "message": f"This photo looks more like {other_crop}, not {crop_type}. "
+                       f"Please select the correct crop or upload a {crop_type} leaf photo.",
+            "detected_crop_guess": other_crop
+        }), 200
+
+    # Otherwise, proceed as normal within the selected crop's classes
     relevant_indices = crop_class_indices[crop_type]
     relevant_probs = {class_names[i]: float(prediction[i]) for i in relevant_indices}
 
@@ -93,8 +113,6 @@ def predict():
     sorted_probs = dict(sorted(relevant_probs_normalized.items(), key=lambda x: x[1], reverse=True))
     predicted_label = list(sorted_probs.keys())[0]
     confidence = list(sorted_probs.values())[0]
-
-    os.remove(temp_path)
 
     return jsonify({
         "crop_type": crop_type,

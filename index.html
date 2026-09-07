@@ -101,6 +101,10 @@
     margin-top: 12px;
     font-size: 14px;
     display: none;
+    background: #fdf1f1;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.5;
   }
   #loading {
     margin-top: 16px;
@@ -193,6 +197,12 @@
 
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong");
+      }
+
+      if (data.error === "crop_mismatch") {
+        errorBox.textContent = data.message;
+        errorBox.style.display = "block";
+        return;
       }
 
       const isHealthy = data.disease.toLowerCase().includes("healthy");
