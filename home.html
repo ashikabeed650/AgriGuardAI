@@ -18,6 +18,30 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: var(--cream);
     color: var(--text);
+    overflow-x: hidden;
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scanPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  @keyframes floatUpDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes scanLine {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
   }
 
   .hero {
@@ -35,7 +59,11 @@
     gap: 48px;
     flex-wrap: wrap;
   }
-  .hero-text { flex: 1; min-width: 280px; }
+  .hero-text {
+    flex: 1;
+    min-width: 280px;
+    animation: fadeSlideUp 0.7s ease both;
+  }
   .brand {
     display: flex;
     align-items: center;
@@ -44,6 +72,7 @@
     letter-spacing: 0.3px;
     opacity: 0.85;
     margin-bottom: 28px;
+    animation: fadeIn 0.6s ease both;
   }
   .brand svg { width: 22px; height: 22px; }
 
@@ -53,6 +82,7 @@
     font-weight: 700;
     margin-bottom: 18px;
     max-width: 480px;
+    animation: fadeSlideUp 0.8s ease 0.1s both;
   }
   .hero-sub {
     font-size: 17px;
@@ -60,8 +90,14 @@
     opacity: 0.9;
     max-width: 420px;
     margin-bottom: 32px;
+    animation: fadeSlideUp 0.8s ease 0.2s both;
   }
-  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .cta-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    animation: fadeSlideUp 0.8s ease 0.3s both;
+  }
   .btn {
     padding: 14px 28px;
     border-radius: 8px;
@@ -71,25 +107,31 @@
     display: inline-block;
     cursor: pointer;
     border: none;
-    transition: transform 0.15s ease, background 0.15s ease;
+    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
   }
   .btn-primary {
     background: white;
     color: var(--forest);
   }
-  .btn-primary:hover { transform: translateY(-1px); background: #eef7f0; }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    background: #eef7f0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+  .btn-primary:active { transform: translateY(0); }
   .btn-secondary {
     background: transparent;
     color: white;
     border: 1.5px solid rgba(255,255,255,0.6);
   }
-  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
 
   .hero-visual {
     flex: 1;
     min-width: 260px;
     display: flex;
     justify-content: center;
+    animation: fadeIn 1s ease 0.3s both;
   }
   .leaf-frame {
     width: 100%;
@@ -99,6 +141,17 @@
     background: url('https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=600&q=80') center/cover;
     box-shadow: 0 24px 48px rgba(0,0,0,0.35);
     position: relative;
+    overflow: hidden;
+    animation: floatUpDown 4s ease-in-out infinite;
+  }
+  .scan-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #7ee787, transparent);
+    box-shadow: 0 0 12px 2px #7ee787;
+    animation: scanLine 2.8s ease-in-out infinite;
   }
   .scan-badge {
     position: absolute;
@@ -120,6 +173,7 @@
     height: 8px;
     border-radius: 50%;
     background: var(--leaf-light);
+    animation: scanPulse 1.4s ease-in-out infinite;
   }
 
   .features {
@@ -135,19 +189,25 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     padding: 32px 16px;
+    opacity: 0;
+    animation: fadeSlideUp 0.7s ease 0.5s forwards;
   }
   .feature {
     text-align: center;
     padding: 12px;
     border-right: 1px solid #eee;
+    transition: transform 0.2s ease;
   }
+  .feature:hover { transform: translateY(-4px); }
   .feature:last-child { border-right: none; }
   .feature-icon {
     width: 40px;
     height: 40px;
     margin: 0 auto 12px;
     color: var(--leaf);
+    transition: transform 0.2s ease;
   }
+  .feature:hover .feature-icon { transform: scale(1.15); }
   .feature h3 {
     font-size: 14px;
     font-weight: 700;
@@ -162,6 +222,10 @@
   @media (max-width: 640px) {
     .feature-grid { grid-template-columns: repeat(2, 1fr); }
     .feature { border-right: none; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
   }
 </style>
 </head>
@@ -183,6 +247,7 @@
     </div>
     <div class="hero-visual">
       <div class="leaf-frame">
+        <div class="scan-line"></div>
         <div class="scan-badge">
           <span class="scan-dot"></span>
           Analyzing leaf...

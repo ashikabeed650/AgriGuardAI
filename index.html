@@ -25,6 +25,29 @@
     justify-content: center;
     padding: 32px 16px;
   }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes checkPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
   .container {
     background: #ffffff;
     max-width: 540px;
@@ -32,6 +55,7 @@
     border-radius: 14px;
     box-shadow: 0 6px 24px rgba(27,67,50,0.08);
     padding: 28px;
+    animation: fadeSlideUp 0.5s ease both;
   }
   h1 {
     font-size: 24px;
@@ -60,7 +84,10 @@
     border-radius: 8px;
     font-size: 15px;
     background: #fff;
+    transition: border-color 0.15s ease;
   }
+  select:focus, input[type="file"]:focus { border-color: var(--leaf); outline: none; }
+
   #preview {
     margin-top: 16px;
     width: 100%;
@@ -68,6 +95,7 @@
     object-fit: cover;
     border-radius: 10px;
     display: none;
+    animation: fadeIn 0.4s ease both;
   }
   button {
     width: 100%;
@@ -80,9 +108,10 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, transform 0.1s ease;
   }
-  button:hover { background: var(--forest); }
+  button:hover:not(:disabled) { background: var(--forest); transform: translateY(-1px); }
+  button:active:not(:disabled) { transform: translateY(0); }
   button:disabled { background: #b5b5ad; cursor: not-allowed; }
 
   #result { margin-top: 26px; display: none; }
@@ -91,13 +120,10 @@
     border-radius: 12px;
     border: 1.5px solid #e8e2d3;
     overflow: hidden;
+    animation: fadeSlideUp 0.5s ease both;
   }
 
-  .result-strip {
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
-  }
+  .result-strip { display: flex; align-items: flex-start; gap: 4px; }
   .strip-bar { width: 6px; flex-shrink: 0; }
   .strip-bar.High { background: var(--red); }
   .strip-bar.Medium { background: var(--amber); }
@@ -113,16 +139,8 @@
     gap: 8px;
     margin-bottom: 4px;
   }
-  .disease-name {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .confidence-badge {
-    font-size: 13px;
-    color: var(--muted);
-    font-weight: 600;
-  }
+  .disease-name { font-size: 20px; font-weight: 700; color: var(--text); }
+  .confidence-badge { font-size: 13px; color: var(--muted); font-weight: 600; }
   .severity-line {
     display: flex;
     align-items: center;
@@ -140,30 +158,21 @@
     gap: 12px;
     padding: 14px 0;
     border-top: 1px solid #f0ece0;
+    opacity: 0;
+    animation: fadeSlideUp 0.45s ease forwards;
   }
-  .section-icon {
-    flex-shrink: 0;
-    width: 22px;
-    height: 22px;
-    color: var(--leaf-light);
-    margin-top: 1px;
-  }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.12s; }
+  .section:nth-child(3) { animation-delay: 0.19s; }
+  .section:nth-child(4) { animation-delay: 0.26s; }
+  .section:nth-child(5) { animation-delay: 0.33s; }
+
+  .section-icon { flex-shrink: 0; width: 22px; height: 22px; color: var(--leaf-light); margin-top: 1px; }
   .section-body { flex: 1; }
-  .section-title {
-    font-size: 14.5px;
-    font-weight: 700;
-    color: var(--soil);
-    margin-bottom: 3px;
-  }
-  .section-text {
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: #3a372f;
-  }
-  .prevention-list {
-    list-style: none;
-    margin-top: 2px;
-  }
+  .section-title { font-size: 14.5px; font-weight: 700; color: var(--soil); margin-bottom: 3px; }
+  .section-text { font-size: 14.5px; line-height: 1.55; color: #3a372f; }
+
+  .prevention-list { list-style: none; margin-top: 2px; }
   .prevention-list li {
     font-size: 14.5px;
     line-height: 1.55;
@@ -171,7 +180,14 @@
     position: relative;
     margin-bottom: 7px;
     color: #3a372f;
+    opacity: 0;
+    animation: fadeSlideUp 0.35s ease forwards;
   }
+  .prevention-list li:nth-child(1) { animation-delay: 0.4s; }
+  .prevention-list li:nth-child(2) { animation-delay: 0.46s; }
+  .prevention-list li:nth-child(3) { animation-delay: 0.52s; }
+  .prevention-list li:nth-child(4) { animation-delay: 0.58s; }
+  .prevention-list li:nth-child(5) { animation-delay: 0.64s; }
   .prevention-list li::before {
     content: "";
     position: absolute;
@@ -181,6 +197,8 @@
     height: 8px;
     border-radius: 50%;
     background: var(--leaf);
+    animation: checkPop 0.3s ease both;
+    animation-delay: inherit;
   }
 
   #error {
@@ -193,12 +211,28 @@
     border-radius: 8px;
     line-height: 1.5;
     border: 1px solid #f3d9d4;
+    animation: shake 0.4s ease;
   }
+
   #loading {
     margin-top: 16px;
+    display: none;
+    align-items: center;
+    gap: 10px;
     font-size: 14.5px;
     color: var(--muted);
-    display: none;
+  }
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid #ddd6c7;
+    border-top-color: var(--leaf);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
   }
 </style>
 </head>
@@ -221,7 +255,7 @@
 
   <button id="submitBtn">Analyze Leaf</button>
 
-  <div id="loading">Analyzing image, please wait...</div>
+  <div id="loading"><div class="spinner"></div><span>Analyzing image, please wait...</span></div>
   <div id="error"></div>
 
   <div id="result">
@@ -329,7 +363,7 @@
     formData.append("crop_type", cropType);
 
     submitBtn.disabled = true;
-    loading.style.display = "block";
+    loading.style.display = "flex";
 
     try {
       const response = await fetch(API_URL, {
@@ -370,6 +404,8 @@
         preventionList.appendChild(li);
       });
 
+      resultBox.style.display = "none";
+      resultBox.offsetHeight; // reflow to restart animation
       resultBox.style.display = "block";
     } catch (err) {
       errorBox.textContent = "Error: " + err.message;
