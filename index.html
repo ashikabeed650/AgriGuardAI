@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgriGuard AI - Crop Disease Detection</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
   :root {
     --forest: #1b4332;
@@ -19,13 +22,16 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'DM Sans', sans-serif;
     background: var(--cream);
     color: var(--text);
     display: flex;
     justify-content: center;
     padding: 32px 16px;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 10% 0%, rgba(82,121,111,0.13), transparent 32%), radial-gradient(circle at 90% 100%, rgba(180,83,9,0.08), transparent 28%);
   }
+  h1 { font-family: 'Fraunces', Georgia, serif; }
 
   @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -51,15 +57,50 @@
 
   .container {
     background: #ffffff;
-    max-width: 540px;
+    max-width: 720px;
     width: 100%;
-    border-radius: 14px;
-    box-shadow: 0 6px 24px rgba(27,67,50,0.08);
-    padding: 28px;
+    border-radius: 18px;
+    box-shadow: 0 18px 55px rgba(27,67,50,0.13);
+    padding: 30px;
     animation: fadeSlideUp 0.5s ease both;
+    border: 1px solid rgba(27,67,50,0.06);
   }
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #eee9df;
+    margin-bottom: 24px;
+  }
+  .app-brand { display: flex; align-items: center; gap: 10px; color: var(--forest); font-weight: 700; }
+  .app-brand-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    color: white;
+    background: var(--forest);
+    border-radius: 12px;
+    box-shadow: 0 7px 16px rgba(27,67,50,0.2);
+  }
+  .app-brand-mark svg { width: 22px; height: 22px; }
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--leaf);
+    background: #edf6ee;
+    border: 1px solid #d9ebdc;
+    border-radius: 999px;
+    padding: 7px 11px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .status-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #66a77a; box-shadow: 0 0 0 4px rgba(102,167,122,0.14); }
   h1 {
-    font-size: 24px;
+    font-size: 28px;
     color: var(--forest);
     margin-bottom: 4px;
     font-weight: 700;
@@ -67,7 +108,7 @@
   p.subtitle {
     color: var(--muted);
     font-size: 14.5px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
     line-height: 1.4;
   }
   label {
@@ -78,11 +119,23 @@
     margin-top: 18px;
     color: var(--text);
   }
+  .scan-controls {
+    display: grid;
+    grid-template-columns: 0.72fr 1.28fr;
+    gap: 14px;
+  }
+  .control-panel {
+    padding: 15px;
+    background: #fbfaf6;
+    border: 1px solid #ebe5d9;
+    border-radius: 12px;
+  }
+  .control-panel label { margin-top: 0; }
   select, input[type="file"] {
     width: 100%;
     padding: 11px;
     border: 1.5px solid #ddd6c7;
-    border-radius: 8px;
+    border-radius: 9px;
     font-size: 15px;
     background: #fff;
     transition: border-color 0.15s ease;
@@ -92,9 +145,11 @@
   #preview {
     margin-top: 16px;
     width: 100%;
-    max-height: 220px;
-    object-fit: cover;
-    border-radius: 10px;
+    height: 300px;
+    object-fit: contain;
+    background: #f4f1e9;
+    border-radius: 12px;
+    border: 1px solid #e8e2d3;
     display: none;
     animation: fadeIn 0.4s ease both;
   }
@@ -105,7 +160,7 @@
     background: var(--leaf);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -118,10 +173,11 @@
   #result { margin-top: 26px; display: none; }
 
   .result-card {
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1.5px solid #e8e2d3;
     overflow: hidden;
     animation: fadeSlideUp 0.5s ease both;
+    box-shadow: 0 10px 28px rgba(27,67,50,0.07);
   }
 
   .result-strip { display: flex; align-items: flex-start; gap: 4px; }
@@ -140,7 +196,7 @@
     gap: 8px;
     margin-bottom: 4px;
   }
-  .disease-name { font-size: 20px; font-weight: 700; color: var(--text); }
+  .disease-name { font-family: 'Fraunces', Georgia, serif; font-size: 24px; font-weight: 700; color: var(--forest); }
   .confidence-badge { font-size: 13px; color: var(--muted); font-weight: 600; }
   .severity-line {
     display: flex;
@@ -172,6 +228,29 @@
   .section-body { flex: 1; }
   .section-title { font-size: 14.5px; font-weight: 700; color: var(--soil); margin-bottom: 3px; }
   .section-text { font-size: 14.5px; line-height: 1.55; color: #3a372f; }
+  .weather-advice {
+    list-style: none;
+    display: grid;
+    gap: 6px;
+    margin-top: 9px;
+  }
+  .weather-advice li {
+    color: #5a554b;
+    font-size: 13px;
+    line-height: 1.45;
+    padding-left: 18px;
+    position: relative;
+  }
+  .weather-advice li::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--leaf-light);
+  }
 
   .prevention-list { list-style: none; margin-top: 2px; }
   .prevention-list li {
@@ -235,6 +314,10 @@
     margin-top: 22px;
     padding-top: 18px;
     border-top: 1px solid #f0ece0;
+    background: #fbfaf6;
+    border: 1px solid #ebe5d9;
+    border-radius: 12px;
+    padding: 18px;
   }
   .shop-finder-header {
     display: flex;
@@ -307,6 +390,18 @@
   }
   #shopFallback a { color: var(--forest); font-weight: 700; }
 
+  @media (max-width: 560px) {
+    body { padding: 14px 10px; }
+    .container { padding: 22px 18px; border-radius: 14px; }
+    .app-header { align-items: flex-start; }
+    .status-pill { font-size: 10px; padding: 6px 8px; }
+    h1 { font-size: 25px; }
+    .scan-controls { grid-template-columns: 1fr; gap: 10px; }
+    .result-content { padding: 18px 15px 7px; }
+    .shop-finder-header { display: block; }
+    #locationButton { margin-top: 12px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
@@ -315,17 +410,31 @@
 <body>
 
 <div class="container">
-  <h1>AgriGuard AI</h1>
+  <header class="app-header">
+    <div class="app-brand">
+      <div class="app-brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C7 2 4 6 4 11c0 5 4 9 8 11 4-2 8-6 8-11 0-5-3-9-8-9z"/><path d="M12 8v8M9 11h6"/></svg>
+      </div>
+      <span>AgriGuard AI</span>
+    </div>
+    <div class="status-pill">Field scan ready</div>
+  </header>
+  <h1>Check your leaf health</h1>
   <p class="subtitle">Upload a leaf photo to detect disease and get treatment advice</p>
 
-  <label for="cropType">Select Crop</label>
-  <select id="cropType">
-    <option value="Tomato">Tomato</option>
-    <option value="Potato">Potato</option>
-  </select>
-
-  <label for="imageInput">Upload Leaf Photo</label>
-  <input type="file" id="imageInput" accept="image/*">
+  <div class="scan-controls">
+    <div class="control-panel">
+      <label for="cropType">Select Crop</label>
+      <select id="cropType">
+        <option value="Tomato">Tomato</option>
+        <option value="Potato">Potato</option>
+      </select>
+    </div>
+    <div class="control-panel">
+      <label for="imageInput">Upload Leaf Photo</label>
+      <input type="file" id="imageInput" accept="image/*">
+    </div>
+  </div>
 
   <img id="preview" alt="Preview">
 
@@ -369,6 +478,7 @@
             <div class="section-body">
               <div class="section-title">Weather that makes it worse</div>
               <div class="section-text" id="weatherText"></div>
+              <ul class="weather-advice" id="weatherAdvice"></ul>
             </div>
           </div>
 
@@ -377,6 +487,22 @@
             <div class="section-body">
               <div class="section-title">What to spray</div>
               <div class="section-text" id="treatmentText"></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M3 12h18M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>
+            <div class="section-body">
+              <div class="section-title">Management tips</div>
+              <ul class="prevention-list" id="managementList"></ul>
+            </div>
+          </div>
+
+          <div class="section">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <div class="section-body">
+              <div class="section-title">When and how to use chemicals</div>
+              <div class="section-text" id="chemicalUseText"></div>
             </div>
           </div>
 
@@ -426,7 +552,10 @@
   const overviewText = document.getElementById("overviewText");
   const impactText = document.getElementById("impactText");
   const weatherText = document.getElementById("weatherText");
+  const weatherAdvice = document.getElementById("weatherAdvice");
   const treatmentText = document.getElementById("treatmentText");
+  const managementList = document.getElementById("managementList");
+  const chemicalUseText = document.getElementById("chemicalUseText");
   const preventionList = document.getElementById("preventionList");
   const locationButton = document.getElementById("locationButton");
   const shopStatus = document.getElementById("shopStatus");
@@ -635,7 +764,20 @@
       overviewText.textContent = data.overview || "-";
       impactText.textContent = data.impact || "-";
       weatherText.textContent = data.favorable_conditions || "-";
+      weatherAdvice.innerHTML = "";
+      (data.weather_advice || []).forEach(advice => {
+        const li = document.createElement("li");
+        li.textContent = advice;
+        weatherAdvice.appendChild(li);
+      });
       treatmentText.textContent = data.chemical_treatment || "-";
+      managementList.innerHTML = "";
+      (data.management_tips || []).forEach(tip => {
+        const li = document.createElement("li");
+        li.textContent = tip;
+        managementList.appendChild(li);
+      });
+      chemicalUseText.textContent = data.chemical_use || "Follow the product label and local agricultural guidance.";
       currentTreatment = data.chemical_treatment || "the recommended treatment";
       shopStatus.textContent = "Allow location access to search nearby shops for this treatment.";
       shopMap.style.display = "none";

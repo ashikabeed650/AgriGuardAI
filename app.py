@@ -154,6 +154,45 @@ disease_info = {
     }
 }
 
+management_info = {
+    "Tomato___healthy": {
+        "management_tips": ["Continue regular scouting", "Keep weeds and fallen leaves cleared", "Use balanced fertilizer based on soil needs"],
+        "chemical_use": "No pesticide is needed for a healthy plant. If fertilizer is required, apply it in the early morning or late afternoon when the soil is moist, never during the hottest part of the day, and water lightly afterward."
+    },
+    "Tomato___Late_blight": {
+        "management_tips": ["Remove badly infected leaves and fruit", "Improve spacing and airflow", "Do not work among wet plants"],
+        "chemical_use": "Spray early in the morning after dew has dried or in the late afternoon, not in strong midday sun. Treat at the first signs or before several wet days. Do not spray before rain; wait until leaves are dry after rain and follow the label interval."
+    },
+    "Tomato___Early_blight": {
+        "management_tips": ["Remove lower infected leaves", "Mulch to reduce soil splash", "Rotate away from tomato and potato crops"],
+        "chemical_use": "Apply at the first spots in the early morning after leaves dry or in the late afternoon. Avoid hot sunny hours, strong wind, and rain. If rain occurs soon after spraying, do not immediately repeat; follow the product label for reapplication and harvest waiting time."
+    },
+    "Tomato___Bacterial_spot": {
+        "management_tips": ["Use pathogen-free seed and disease-free transplants", "Avoid sprinkler irrigation and water splash", "Rotate with a non-host crop and remove volunteer plants and debris"],
+        "chemical_use": "Copper bactericides provide partial protection, not a cure. Apply at the first sign or before a warm, wet infection period; UC IPM reports 10-14 day repeats when warm, moist conditions persist. Use only the interval and product registered in India, and do not spray before rain or in midday heat."
+    },
+    "Tomato___Leaf_Mold": {
+        "management_tips": ["Reduce greenhouse humidity", "Ventilate early in the day", "Remove infected lower leaves"],
+        "chemical_use": "Spray early morning after foliage dries or late afternoon when humidity is lower, with good leaf coverage. Avoid hot sunny periods and rain. Improve ventilation first, and after rain wait until foliage is dry before any label-approved reapplication."
+    },
+    "Tomato___Septoria_leaf_spot": {
+        "management_tips": ["Remove spotted lower leaves", "Use mulch to prevent soil splash", "Keep tools and hands clean between plants"],
+        "chemical_use": "Begin at the first spots or before a wet period. Apply to dry foliage in the early morning after dew dries or in the late afternoon. Avoid midday heat and rain; after rain, wait for dry leaves and reapply only according to the label and harvest interval."
+    },
+    "Potato___healthy": {
+        "management_tips": ["Inspect plants weekly", "Keep rows weed-free", "Use certified seed potatoes next season"],
+        "chemical_use": "No pesticide is needed for a healthy plant. If fertilizer is required, apply it in the early morning or late afternoon when the soil is moist, avoid the hottest hours, and water lightly afterward."
+    },
+    "Potato___Late_blight": {
+        "management_tips": ["Use certified seed tubers", "Remove cull piles, volunteer potatoes, and infected debris", "Avoid overhead irrigation and maintain airflow so foliage dries daily"],
+        "chemical_use": "Use a protectant before or when disease risk begins during cool, wet weather. UC IPM describes 7-10 day protection intervals, with shorter intervals sometimes needed in cool rain; use the Indian label interval. Spray dry foliage in early morning after dew dries or late afternoon, never just before rain."
+    },
+    "Potato___Early_blight": {
+        "management_tips": ["Maintain balanced nutrition and irrigation to reduce plant stress", "Remove potato refuse and infected debris after harvest", "Monitor older leaves and record disease development"],
+        "chemical_use": "Fungicide is justified when early disease may cause economic loss. Apply when the first symptoms appear; UC IPM describes continued protection at 7-10 day intervals when justified. Spray dry foliage after dew dries, avoid midday heat and rain, and use only the Indian product label interval and harvest waiting period."
+    }
+}
+
 def predict_tflite(img_array):
     interpreter.set_tensor(input_details[0]['index'], img_array.astype(np.float32))
     interpreter.invoke()
@@ -212,11 +251,12 @@ def predict():
     other_crop = [c for c in crop_class_indices if c != crop_type][0]
     other_mass = crop_mass[other_crop]
 
-    if other_mass > selected_mass:
+    detected_crop = max(crop_mass, key=crop_mass.get)
+    if detected_crop != crop_type:
         return jsonify({
             "error": "crop_mismatch",
-            "message": f"This photo looks more like {other_crop}, not {crop_type}. Please select the correct crop or upload a {crop_type} leaf photo.",
-            "detected_crop_guess": other_crop
+            "message": f"This photo looks like a {detected_crop} leaf, but you selected {crop_type}. Please upload a clear {crop_type} leaf photo.",
+            "detected_crop_guess": detected_crop
         }), 200
 
     relevant_indices = crop_class_indices[crop_type]
@@ -230,6 +270,17 @@ def predict():
     confidence = list(sorted_probs.values())[0]
 
     info = disease_info.get(predicted_label, {})
+    management = management_info.get(predicted_label, {})
+    weather_advice = [
+        "Check the leaves again after rain, fog, or heavy dew.",
+        "Water at the soil, not over the leaves, and improve airflow between plants.",
+        "Avoid spraying just before rain; follow the product label and allow the leaves to dry first."
+    ]
+    favorable_conditions = info.get("favorable_conditions", "")
+    if "cool" in favorable_conditions.lower():
+        weather_advice[0] = "Be especially alert during cool, damp weather and after fog or rain."
+    elif "warm" in favorable_conditions.lower():
+        weather_advice[0] = "Be especially alert during warm, humid weather and after wet periods."
 
     return jsonify({
         "crop_type": crop_type,
@@ -239,7 +290,10 @@ def predict():
         "overview": info.get("overview", ""),
         "impact": info.get("impact", ""),
         "favorable_conditions": info.get("favorable_conditions", ""),
+        "weather_advice": weather_advice,
         "chemical_treatment": info.get("chemical_treatment", ""),
+        "management_tips": management.get("management_tips", []),
+        "chemical_use": management.get("chemical_use", "Follow the product label and local agricultural guidance."),
         "prevention": info.get("prevention", []),
         "all_probabilities": {k: round(v, 2) for k, v in sorted_probs.items()}
     })
