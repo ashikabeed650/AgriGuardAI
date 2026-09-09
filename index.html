@@ -2,174 +2,202 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgriGuard AI - Crop Disease Detection</title>
 <style>
+  :root {
+    --forest: #1b4332;
+    --leaf: #2d6a4f;
+    --leaf-light: #52796f;
+    --cream: #faf6ee;
+    --soil: #6b4f3a;
+    --amber: #b45309;
+    --red: #9b2226;
+    --text: #26241f;
+    --muted: #6b6558;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f4f7f4;
-    color: #1a1a1a;
+    background: var(--cream);
+    color: var(--text);
     display: flex;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 32px 16px;
   }
   .container {
     background: #ffffff;
-    max-width: 520px;
+    max-width: 540px;
     width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    padding: 32px;
+    border-radius: 14px;
+    box-shadow: 0 6px 24px rgba(27,67,50,0.08);
+    padding: 28px;
   }
   h1 {
-    font-size: 22px;
-    color: #2e7d32;
+    font-size: 24px;
+    color: var(--forest);
     margin-bottom: 4px;
+    font-weight: 700;
   }
   p.subtitle {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 24px;
+    color: var(--muted);
+    font-size: 14.5px;
+    margin-bottom: 22px;
+    line-height: 1.4;
   }
   label {
     display: block;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 6px;
-    margin-top: 16px;
+    margin-top: 18px;
+    color: var(--text);
   }
   select, input[type="file"] {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 11px;
+    border: 1.5px solid #ddd6c7;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 15px;
+    background: #fff;
   }
   #preview {
     margin-top: 16px;
     width: 100%;
     max-height: 220px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 10px;
     display: none;
   }
   button {
     width: 100%;
-    margin-top: 20px;
-    padding: 12px;
-    background: #2e7d32;
+    margin-top: 22px;
+    padding: 14px;
+    background: var(--leaf);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.15s ease;
   }
-  button:hover { background: #256428; }
-  button:disabled { background: #999; cursor: not-allowed; }
+  button:hover { background: var(--forest); }
+  button:disabled { background: #b5b5ad; cursor: not-allowed; }
 
-  #result {
-    margin-top: 24px;
-    display: none;
+  #result { margin-top: 26px; display: none; }
+
+  .result-card {
+    border-radius: 12px;
+    border: 1.5px solid #e8e2d3;
+    overflow: hidden;
   }
 
-  .result-header {
+  .result-strip {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .strip-bar { width: 6px; flex-shrink: 0; }
+  .strip-bar.High { background: var(--red); }
+  .strip-bar.Medium { background: var(--amber); }
+  .strip-bar.None { background: var(--leaf); }
+
+  .result-content { flex: 1; padding: 20px 20px 8px; }
+
+  .disease-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    border-radius: 10px 10px 0 0;
-    background: #2e7d32;
-    color: white;
-  }
-  .result-header.severity-high { background: #c62828; }
-  .result-header.severity-medium { background: #e65100; }
-  .result-header.severity-none { background: #2e7d32; }
-
-  .disease-name {
-    font-size: 17px;
-    font-weight: 700;
-  }
-  .confidence-badge {
-    font-size: 12px;
-    background: rgba(255,255,255,0.25);
-    padding: 4px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
-  }
-
-  .result-body {
-    border: 1px solid #e5e5e5;
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    padding: 4px 16px 16px;
-  }
-
-  .info-block {
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid #eee;
-  }
-  .info-block:first-child { border-top: none; margin-top: 12px; padding-top: 0; }
-  .info-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #888;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 4px;
   }
-  .info-text {
-    font-size: 14px;
-    line-height: 1.5;
-    color: #333;
-  }
-  .severity-tag {
-    display: inline-block;
-    font-size: 11px;
+  .disease-name {
+    font-size: 20px;
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-top: 4px;
+    color: var(--text);
   }
-  .severity-tag.High { background: #fdecea; color: #c62828; }
-  .severity-tag.Medium { background: #fff3e0; color: #e65100; }
-  .severity-tag.None { background: #e8f5e9; color: #2e7d32; }
+  .confidence-badge {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .severity-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .severity-line.High { color: var(--red); }
+  .severity-line.Medium { color: var(--amber); }
+  .severity-line.None { color: var(--leaf); }
 
+  .section {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-top: 1px solid #f0ece0;
+  }
+  .section-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: var(--leaf-light);
+    margin-top: 1px;
+  }
+  .section-body { flex: 1; }
+  .section-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--soil);
+    margin-bottom: 3px;
+  }
+  .section-text {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: #3a372f;
+  }
   .prevention-list {
     list-style: none;
-    margin-top: 6px;
+    margin-top: 2px;
   }
   .prevention-list li {
-    font-size: 14px;
-    line-height: 1.5;
-    padding-left: 20px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    padding-left: 22px;
     position: relative;
-    margin-bottom: 6px;
-    color: #333;
+    margin-bottom: 7px;
+    color: #3a372f;
   }
   .prevention-list li::before {
-    content: "✓";
+    content: "";
     position: absolute;
     left: 0;
-    color: #2e7d32;
-    font-weight: 700;
+    top: 7px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--leaf);
   }
 
   #error {
-    color: #c62828;
+    color: var(--red);
     margin-top: 12px;
-    font-size: 14px;
+    font-size: 14.5px;
     display: none;
-    background: #fdf1f1;
-    padding: 12px;
+    background: #fdf1ef;
+    padding: 14px;
     border-radius: 8px;
     line-height: 1.5;
+    border: 1px solid #f3d9d4;
   }
   #loading {
     margin-top: 16px;
-    font-size: 14px;
-    color: #666;
+    font-size: 14.5px;
+    color: var(--muted);
     display: none;
   }
 </style>
@@ -197,34 +225,59 @@
   <div id="error"></div>
 
   <div id="result">
-    <div class="result-header" id="resultHeader">
-      <div class="disease-name" id="diseaseName"></div>
-      <div class="confidence-badge" id="confidenceText"></div>
-    </div>
-    <div class="result-body">
-      <div class="info-block" id="severityBlock">
-        <div class="info-label">Severity</div>
-        <span class="severity-tag" id="severityTag"></span>
-      </div>
-      <div class="info-block">
-        <div class="info-label">Overview</div>
-        <div class="info-text" id="overviewText"></div>
-      </div>
-      <div class="info-block">
-        <div class="info-label">Impact on Crop</div>
-        <div class="info-text" id="impactText"></div>
-      </div>
-      <div class="info-block">
-        <div class="info-label">Favorable Weather Conditions</div>
-        <div class="info-text" id="weatherText"></div>
-      </div>
-      <div class="info-block">
-        <div class="info-label">Chemical Treatment</div>
-        <div class="info-text" id="treatmentText"></div>
-      </div>
-      <div class="info-block">
-        <div class="info-label">Prevention Steps</div>
-        <ul class="prevention-list" id="preventionList"></ul>
+    <div class="result-card">
+      <div class="result-strip">
+        <div class="strip-bar" id="stripBar"></div>
+        <div class="result-content">
+          <div class="disease-header">
+            <div class="disease-name" id="diseaseName"></div>
+            <div class="confidence-badge" id="confidenceText"></div>
+          </div>
+          <div class="severity-line" id="severityLine">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            <span id="severityWord"></span> risk
+          </div>
+
+          <div class="section">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+            <div class="section-body">
+              <div class="section-title">What this is</div>
+              <div class="section-text" id="overviewText"></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
+            <div class="section-body">
+              <div class="section-title">Effect on your crop</div>
+              <div class="section-text" id="impactText"></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17.5 19a4.5 4.5 0 1 0-1.44-8.76 6 6 0 0 0-11.4 2.26A4 4 0 0 0 5.5 20h12z"/></svg>
+            <div class="section-body">
+              <div class="section-title">Weather that makes it worse</div>
+              <div class="section-text" id="weatherText"></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6v4H9zM12 7v14M8 12h8"/></svg>
+            <div class="section-body">
+              <div class="section-title">What to spray</div>
+              <div class="section-text" id="treatmentText"></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
+            <div class="section-body">
+              <div class="section-title">How to prevent it next time</div>
+              <ul class="prevention-list" id="preventionList"></ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -239,10 +292,11 @@
   const loading = document.getElementById("loading");
   const errorBox = document.getElementById("error");
   const resultBox = document.getElementById("result");
-  const resultHeader = document.getElementById("resultHeader");
+  const stripBar = document.getElementById("stripBar");
   const diseaseName = document.getElementById("diseaseName");
   const confidenceText = document.getElementById("confidenceText");
-  const severityTag = document.getElementById("severityTag");
+  const severityLine = document.getElementById("severityLine");
+  const severityWord = document.getElementById("severityWord");
   const overviewText = document.getElementById("overviewText");
   const impactText = document.getElementById("impactText");
   const weatherText = document.getElementById("weatherText");
@@ -296,21 +350,18 @@
       }
 
       const severity = data.severity || "None";
-      const severityClass = severity === "High" ? "severity-high"
-                           : severity === "Medium" ? "severity-medium"
-                           : "severity-none";
 
-      resultHeader.className = "result-header " + severityClass;
+      stripBar.className = "strip-bar " + severity;
+      severityLine.className = "severity-line " + severity;
+      severityWord.textContent = severity === "None" ? "No" : severity;
+
       diseaseName.textContent = data.disease.replace(/___/g, " - ").replace(/_/g, " ");
       confidenceText.textContent = data.confidence + "% confidence";
 
-      severityTag.textContent = severity;
-      severityTag.className = "severity-tag " + severity;
-
-      overviewText.textContent = data.overview || "—";
-      impactText.textContent = data.impact || "—";
-      weatherText.textContent = data.favorable_conditions || "—";
-      treatmentText.textContent = data.chemical_treatment || "—";
+      overviewText.textContent = data.overview || "-";
+      impactText.textContent = data.impact || "-";
+      weatherText.textContent = data.favorable_conditions || "-";
+      treatmentText.textContent = data.chemical_treatment || "-";
 
       preventionList.innerHTML = "";
       (data.prevention || []).forEach(step => {
