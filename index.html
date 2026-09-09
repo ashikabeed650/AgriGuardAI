@@ -15,7 +15,7 @@
   }
   .container {
     background: #ffffff;
-    max-width: 480px;
+    max-width: 520px;
     width: 100%;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -72,30 +72,90 @@
     margin-top: 24px;
     display: none;
   }
-  .result-card {
+
+  .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 16px;
-    border-radius: 8px;
-    background: #f1f8f1;
-    border-left: 4px solid #2e7d32;
+    border-radius: 10px 10px 0 0;
+    background: #2e7d32;
+    color: white;
   }
-  .result-card.disease {
-    background: #fdf1f1;
-    border-left-color: #c62828;
-  }
+  .result-header.severity-high { background: #c62828; }
+  .result-header.severity-medium { background: #e65100; }
+  .result-header.severity-none { background: #2e7d32; }
+
   .disease-name {
     font-size: 17px;
     font-weight: 700;
   }
-  .confidence {
-    font-size: 13px;
-    color: #555;
-    margin-top: 4px;
+  .confidence-badge {
+    font-size: 12px;
+    background: rgba(255,255,255,0.25);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
   }
-  .treatment {
-    margin-top: 10px;
+
+  .result-body {
+    border: 1px solid #e5e5e5;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 4px 16px 16px;
+  }
+
+  .info-block {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #eee;
+  }
+  .info-block:first-child { border-top: none; margin-top: 12px; padding-top: 0; }
+  .info-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .info-text {
     font-size: 14px;
     line-height: 1.5;
+    color: #333;
   }
+  .severity-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+  .severity-tag.High { background: #fdecea; color: #c62828; }
+  .severity-tag.Medium { background: #fff3e0; color: #e65100; }
+  .severity-tag.None { background: #e8f5e9; color: #2e7d32; }
+
+  .prevention-list {
+    list-style: none;
+    margin-top: 6px;
+  }
+  .prevention-list li {
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  .prevention-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #2e7d32;
+    font-weight: 700;
+  }
+
   #error {
     color: #c62828;
     margin-top: 12px;
@@ -137,10 +197,35 @@
   <div id="error"></div>
 
   <div id="result">
-    <div class="result-card" id="resultCard">
+    <div class="result-header" id="resultHeader">
       <div class="disease-name" id="diseaseName"></div>
-      <div class="confidence" id="confidenceText"></div>
-      <div class="treatment" id="treatmentText"></div>
+      <div class="confidence-badge" id="confidenceText"></div>
+    </div>
+    <div class="result-body">
+      <div class="info-block" id="severityBlock">
+        <div class="info-label">Severity</div>
+        <span class="severity-tag" id="severityTag"></span>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Overview</div>
+        <div class="info-text" id="overviewText"></div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Impact on Crop</div>
+        <div class="info-text" id="impactText"></div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Favorable Weather Conditions</div>
+        <div class="info-text" id="weatherText"></div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Chemical Treatment</div>
+        <div class="info-text" id="treatmentText"></div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Prevention Steps</div>
+        <ul class="prevention-list" id="preventionList"></ul>
+      </div>
     </div>
   </div>
 </div>
@@ -154,10 +239,15 @@
   const loading = document.getElementById("loading");
   const errorBox = document.getElementById("error");
   const resultBox = document.getElementById("result");
-  const resultCard = document.getElementById("resultCard");
+  const resultHeader = document.getElementById("resultHeader");
   const diseaseName = document.getElementById("diseaseName");
   const confidenceText = document.getElementById("confidenceText");
+  const severityTag = document.getElementById("severityTag");
+  const overviewText = document.getElementById("overviewText");
+  const impactText = document.getElementById("impactText");
+  const weatherText = document.getElementById("weatherText");
   const treatmentText = document.getElementById("treatmentText");
+  const preventionList = document.getElementById("preventionList");
 
   imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
@@ -205,12 +295,29 @@
         return;
       }
 
-      const isHealthy = data.disease.toLowerCase().includes("healthy");
-      resultCard.className = isHealthy ? "result-card" : "result-card disease";
+      const severity = data.severity || "None";
+      const severityClass = severity === "High" ? "severity-high"
+                           : severity === "Medium" ? "severity-medium"
+                           : "severity-none";
 
+      resultHeader.className = "result-header " + severityClass;
       diseaseName.textContent = data.disease.replace(/___/g, " - ").replace(/_/g, " ");
-      confidenceText.textContent = "Confidence: " + data.confidence + "%";
-      treatmentText.textContent = data.treatment;
+      confidenceText.textContent = data.confidence + "% confidence";
+
+      severityTag.textContent = severity;
+      severityTag.className = "severity-tag " + severity;
+
+      overviewText.textContent = data.overview || "—";
+      impactText.textContent = data.impact || "—";
+      weatherText.textContent = data.favorable_conditions || "—";
+      treatmentText.textContent = data.chemical_treatment || "—";
+
+      preventionList.innerHTML = "";
+      (data.prevention || []).forEach(step => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        preventionList.appendChild(li);
+      });
 
       resultBox.style.display = "block";
     } catch (err) {
