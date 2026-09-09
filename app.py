@@ -38,117 +38,117 @@ crop_class_indices = {
 
 disease_info = {
     'Tomato___healthy': {
-        "overview": "The plant shows no signs of disease or pest damage.",
-        "impact": "None - plant is healthy and growing normally.",
-        "favorable_conditions": "N/A",
-        "chemical_treatment": "No treatment needed.",
+        "overview": "Your tomato plant looks healthy. No disease found.",
+        "impact": "No damage. Your plant is growing well.",
+        "favorable_conditions": "Not applicable.",
+        "chemical_treatment": "No spray needed right now.",
         "prevention": [
-            "Continue regular monitoring for early signs of disease",
-            "Maintain proper watering and spacing",
-            "Apply balanced fertilizer as per soil test recommendations"
+            "Check your plants every few days for spots or yellow leaves",
+            "Water at the base of the plant, not on the leaves",
+            "Give proper fertilizer as needed"
         ],
         "severity": "None"
     },
     'Tomato___Late_blight': {
-        "overview": "A fast-spreading fungal disease caused by Phytophthora infestans, affecting leaves, stems, and fruit.",
-        "impact": "Can destroy 50-100% of crop yield within days if untreated; historically responsible for the Irish Potato Famine.",
-        "favorable_conditions": "Thrives in cool, wet weather (15-20C) with high humidity (above 90%) and prolonged leaf wetness.",
-        "chemical_treatment": "Apply Mancozeb or Chlorothalonil-based fungicides every 7-10 days. For severe cases, use Metalaxyl + Mancozeb combination.",
+        "overview": "A serious disease that causes dark, wet-looking patches on leaves and can spread very fast.",
+        "impact": "Can destroy your entire crop within a few days if not treated quickly.",
+        "favorable_conditions": "Happens more in cool, damp weather and after heavy rain or fog.",
+        "chemical_treatment": "Spray Mancozeb or Chlorothalonil on the plant. Repeat every 7-10 days. In bad cases, use Metalaxyl + Mancozeb together.",
         "prevention": [
-            "Avoid overhead irrigation; use drip irrigation instead",
-            "Ensure proper plant spacing for airflow",
-            "Remove and destroy infected plant debris immediately",
-            "Avoid planting tomato/potato in the same field consecutively"
+            "Don't water the leaves directly - water the soil around the plant",
+            "Leave enough space between plants for air to pass",
+            "Remove and burn/bury infected leaves immediately",
+            "Don't plant tomato and potato in the same field next season"
         ],
         "severity": "High"
     },
     'Tomato___Early_blight': {
-        "overview": "A fungal disease caused by Alternaria solani, typically starting on older, lower leaves as dark concentric-ring spots.",
-        "impact": "Reduces photosynthesis and yield by 20-50% if left untreated; weakens plant over the season.",
-        "favorable_conditions": "Favored by warm temperatures (24-29C), high humidity, and alternating wet-dry periods.",
-        "chemical_treatment": "Apply Chlorothalonil or Copper-based fungicides at first sign of symptoms, repeat every 7-14 days.",
+        "overview": "Dark rings appear on older leaves, usually starting from the bottom of the plant.",
+        "impact": "Plant becomes weak and gives fewer, smaller tomatoes if not treated.",
+        "favorable_conditions": "Common in warm weather with alternating rain and dry spells.",
+        "chemical_treatment": "Spray Chlorothalonil or a copper-based spray as soon as you see spots. Repeat every 7-14 days.",
         "prevention": [
-            "Mulch around the base of plants to prevent soil splash onto leaves",
-            "Remove lower infected leaves promptly",
-            "Avoid overhead watering",
-            "Rotate crops with non-solanaceous plants"
+            "Put mulch (dry grass/straw) around the base of the plant",
+            "Remove infected bottom leaves right away",
+            "Don't water the leaves, only the soil",
+            "Change what you plant in this field next season"
         ],
         "severity": "Medium"
     },
     'Tomato___Bacterial_spot': {
-        "overview": "Caused by Xanthomonas bacteria, producing small, dark, water-soaked spots on leaves and fruit.",
-        "impact": "Can cause significant defoliation and reduce marketable fruit yield by 10-30%.",
-        "favorable_conditions": "Spreads rapidly in warm (24-30C), wet, humid conditions, especially with wind-driven rain.",
-        "chemical_treatment": "Use Copper-based bactericides combined with Mancozeb; bacterial diseases don't respond to standard fungicides.",
+        "overview": "Small dark spots appear on leaves and fruit, caused by bacteria, not fungus.",
+        "impact": "Leaves fall off and fruit quality drops, reducing how much you can sell.",
+        "favorable_conditions": "Spreads fast in warm, wet weather, especially with wind and rain.",
+        "chemical_treatment": "Use a copper spray mixed with Mancozeb. Regular fungicides will not work since this is bacterial.",
         "prevention": [
-            "Use disease-free certified seeds/seedlings",
-            "Avoid working in fields when plants are wet",
-            "Practice crop rotation (2-3 years)",
-            "Remove and destroy infected plant material"
+            "Only use good quality, disease-free seeds or seedlings",
+            "Don't work in the field when plants are wet",
+            "Change crops in this field for 2-3 years",
+            "Remove and destroy infected plants"
         ],
         "severity": "Medium"
     },
     'Tomato___Leaf_Mold': {
-        "overview": "A fungal disease (Passalora fulva) causing yellow spots on upper leaf surfaces and olive-green mold underneath.",
-        "impact": "Mainly affects greenhouse-grown tomatoes; can reduce yield by 30-50% in high-humidity environments.",
-        "favorable_conditions": "Thrives in high humidity (above 85%) and poor air circulation, common in greenhouses.",
-        "chemical_treatment": "Apply Chlorothalonil or Copper-based fungicides; improve ventilation to reduce fungicide dependency.",
+        "overview": "Yellow spots appear on top of leaves, with a green-gray fuzzy layer underneath.",
+        "impact": "Mostly affects plants grown in greenhouses or very humid areas; can reduce yield noticeably.",
+        "favorable_conditions": "Happens in high humidity with poor air flow, especially in greenhouses.",
+        "chemical_treatment": "Spray Chlorothalonil or a copper-based fungicide. Improve air flow around plants to help the spray work better.",
         "prevention": [
-            "Improve greenhouse/field ventilation",
-            "Reduce humidity through proper spacing",
-            "Avoid overhead watering",
-            "Use resistant tomato varieties where available"
+            "Open up space around plants for better air flow",
+            "Reduce humidity if growing in a greenhouse/covered area",
+            "Don't water the leaves directly",
+            "Choose disease-resistant tomato seed varieties if available"
         ],
         "severity": "Medium"
     },
     'Tomato___Septoria_leaf_spot': {
-        "overview": "A fungal disease caused by Septoria lycopersici, producing small circular spots with dark borders and gray centers.",
-        "impact": "Causes progressive defoliation starting from lower leaves, reducing yield and fruit quality by up to 40%.",
-        "favorable_conditions": "Favored by warm, wet, humid weather, especially after rain or heavy dew.",
-        "chemical_treatment": "Apply Chlorothalonil or Mancozeb-based fungicides every 7-10 days during favorable conditions.",
+        "overview": "Small round spots with dark edges and gray centers appear on leaves.",
+        "impact": "Leaves fall off starting from the bottom, which can reduce your harvest by a lot.",
+        "favorable_conditions": "Common after rain or heavy dew, in warm humid weather.",
+        "chemical_treatment": "Spray Chlorothalonil or Mancozeb every 7-10 days while conditions stay wet/humid.",
         "prevention": [
-            "Remove and destroy infected lower leaves",
-            "Mulch to prevent soil splash",
-            "Avoid overhead irrigation",
-            "Practice 2-3 year crop rotation"
+            "Remove infected lower leaves as soon as you see them",
+            "Put mulch around the base of plants",
+            "Water the soil, not the leaves",
+            "Rotate your crops every 2-3 years"
         ],
         "severity": "Medium"
     },
     'Potato___healthy': {
-        "overview": "The plant shows no signs of disease or pest damage.",
-        "impact": "None - plant is healthy and growing normally.",
-        "favorable_conditions": "N/A",
-        "chemical_treatment": "No treatment needed.",
+        "overview": "Your potato plant looks healthy. No disease found.",
+        "impact": "No damage. Your plant is growing well.",
+        "favorable_conditions": "Not applicable.",
+        "chemical_treatment": "No spray needed right now.",
         "prevention": [
-            "Continue regular field monitoring",
-            "Maintain proper irrigation schedule",
-            "Use certified disease-free seed potatoes"
+            "Check your field regularly for early signs of disease",
+            "Keep a regular watering schedule",
+            "Use good quality, disease-free seed potatoes next season"
         ],
         "severity": "None"
     },
     'Potato___Late_blight': {
-        "overview": "A highly destructive fungal disease caused by Phytophthora infestans, affecting leaves, stems, and tubers.",
-        "impact": "Can cause total crop loss within 7-14 days under favorable conditions; also causes tuber rot in storage.",
-        "favorable_conditions": "Cool, wet weather (15-20C) with high humidity and extended leaf wetness periods.",
-        "chemical_treatment": "Apply copper-based fungicides or Metalaxyl + Mancozeb immediately at first sign of infection; repeat every 5-7 days in high-risk periods.",
+        "overview": "A serious, fast-spreading disease causing dark, wet-looking patches on leaves and stems.",
+        "impact": "Can destroy your entire crop within 1-2 weeks. Also rots stored potatoes.",
+        "favorable_conditions": "Happens more in cool, damp weather with high humidity.",
+        "chemical_treatment": "Spray copper-based fungicide or Metalaxyl + Mancozeb immediately. Repeat every 5-7 days if weather stays wet.",
         "prevention": [
-            "Plant certified disease-free seed potatoes",
-            "Avoid overhead irrigation",
-            "Destroy volunteer potato plants and infected debris",
-            "Harvest tubers only after foliage has fully died back"
+            "Use only certified, disease-free seed potatoes",
+            "Don't water the leaves - water the soil instead",
+            "Remove and destroy any random/self-grown potato plants nearby",
+            "Only dig up potatoes after the leaves have completely dried and died"
         ],
         "severity": "High"
     },
     'Potato___Early_blight': {
-        "overview": "A fungal disease caused by Alternaria solani, producing dark concentric-ring spots on older leaves first.",
-        "impact": "Reduces photosynthesis and tuber size; yield loss typically 15-30% if untreated.",
-        "favorable_conditions": "Warm temperatures (24-29C) with alternating wet and dry periods, and plant stress (e.g., low nitrogen).",
-        "chemical_treatment": "Apply Chlorothalonil or Mancozeb-based fungicides at first symptoms, repeat every 7-14 days.",
+        "overview": "Dark rings appear on older leaves first, usually lower on the plant.",
+        "impact": "Reduces the size of your potatoes and overall harvest by 15-30% if not treated.",
+        "favorable_conditions": "Common in warm weather with dry and wet periods alternating, and when soil lacks nutrients.",
+        "chemical_treatment": "Spray Chlorothalonil or Mancozeb as soon as spots appear. Repeat every 7-14 days.",
         "prevention": [
-            "Maintain adequate soil fertility, especially nitrogen",
-            "Practice crop rotation (avoid solanaceous crops for 2-3 years)",
-            "Remove infected plant debris after harvest",
-            "Avoid water stress on plants"
+            "Keep soil well-fertilized, especially with nitrogen",
+            "Avoid growing potato/tomato in the same field repeatedly",
+            "Clear away infected plant leftovers after harvest",
+            "Make sure plants get enough water - avoid stress"
         ],
         "severity": "Medium"
     }
