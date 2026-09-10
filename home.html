@@ -107,6 +107,15 @@
     text-decoration: none;
     transition: color 0.15s ease;
   }
+  .home-language {
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font: inherit;
+    font-size: 12px;
+  }
   .nav-links a:hover { color: white; }
   .hero-inner {
     max-width: 1000px;
@@ -496,16 +505,23 @@
       AgriGuard AI
     </div>
     <div class="nav-links">
-      <a href="#about-us">About us</a>
+      <a href="#about-us" data-i18n="aboutUs">About us</a>
+      <select id="homeLanguageSelect" class="home-language" aria-label="Choose language">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="te">తెలుగు</option>
+        <option value="ta">தமிழ்</option>
+        <option value="kn">ಕನ್ನಡ</option>
+      </select>
     </div>
   </div>
   <div class="hero-inner">
     <div class="hero-text">
-      <h1>Catch crop disease before it spreads</h1>
-      <p class="hero-sub">Photograph a leaf and get an instant diagnosis with treatment guidance for tomato, potato, and pepper crops.</p>
+      <h1 data-i18n="heroTitle">Catch crop disease before it spreads</h1>
+      <p class="hero-sub" data-i18n="heroSub">Photograph a leaf and get an instant diagnosis with treatment guidance for tomato, potato, and pepper crops.</p>
       <div class="cta-row">
-        <button class="btn btn-primary" onclick="window.location.href='/app'">Detect Now</button>
-        <a class="btn btn-secondary" href="#how-it-works">How It Works</a>
+        <button class="btn btn-primary" data-i18n="detectNow" onclick="openScanner()">Detect Now</button>
+        <a class="btn btn-secondary" data-i18n="howItWorks" href="#how-it-works">How It Works</a>
       </div>
     </div>
     <div class="hero-visual">
@@ -513,7 +529,7 @@
         <div class="scan-line"></div>
         <div class="scan-badge">
           <span class="scan-dot"></span>
-          Analyzing leaf...
+          <span data-i18n="analyzing">Analyzing leaf...</span>
         </div>
       </div>
     </div>
@@ -523,40 +539,40 @@
 <main class="dashboard">
   <section class="weather-card" aria-live="polite">
     <div>
-      <div class="weather-label">Live field weather</div>
-      <div class="weather-location" id="weatherLocation">Getting your location...</div>
-      <div class="weather-status" id="weatherStatus">Allow location access to see current conditions.</div>
+      <div class="weather-label" data-i18n="liveWeather">Live field weather</div>
+      <div class="weather-location" id="weatherLocation" data-i18n="gettingLocation">Getting your location...</div>
+      <div class="weather-status" id="weatherStatus" data-i18n="allowWeather">Allow location access to see current conditions.</div>
     </div>
     <div class="weather-current">
       <div class="weather-icon" id="weatherIcon" aria-hidden="true">--</div>
       <div>
         <div class="weather-temperature" id="weatherTemperature">--</div>
-        <div class="weather-details" id="weatherDetails">Temperature · Humidity · Wind</div>
+        <div class="weather-details" id="weatherDetails" data-i18n="weatherUnits">Temperature · Humidity · Wind</div>
       </div>
     </div>
   </section>
   <section id="how-it-works">
     <div class="section-heading">
       <div>
-        <h2>How to use AgriGuard</h2>
-        <p>A simple three-step check to help you understand a leaf problem and decide what to do next.</p>
+        <h2 data-i18n="howTitle">How to use AgriGuard</h2>
+        <p data-i18n="howSub">A simple three-step check to help you understand a leaf problem and decide what to do next.</p>
       </div>
     </div>
     <div class="steps-grid">
       <article class="step-card">
         <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>
-        <h3>Choose your crop</h3>
-        <p>Select Tomato, Potato, or Pepper so the AI compares your image with the right crop diseases.</p>
+        <h3 data-i18n="step1Title">Choose your crop</h3>
+        <p data-i18n="step1Text">Select Tomato, Potato, or Pepper so the AI compares your image with the right crop diseases.</p>
       </article>
       <article class="step-card">
         <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16v12H4z"/><circle cx="9" cy="10" r="1.5"/><path d="m5 16 4-4 3 3 2-2 5 3"/></svg>
-        <h3>Upload a clear leaf photo</h3>
-        <p>Use a well-lit photo that shows the leaf clearly, then select Analyze Leaf.</p>
+        <h3 data-i18n="step2Title">Upload a clear leaf photo</h3>
+        <p data-i18n="step2Text">Use a well-lit photo that shows the leaf clearly, then select Analyze Leaf.</p>
       </article>
       <article class="step-card">
         <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m5 12 4 4L19 6"/><path d="M4 20h16"/></svg>
-        <h3>Review and act</h3>
-        <p>Read the diagnosis, treatment guidance, prevention steps, and nearby shop locations.</p>
+        <h3 data-i18n="step3Title">Review and act</h3>
+        <p data-i18n="step3Text">Read the diagnosis, treatment guidance, prevention steps, and nearby shop locations.</p>
       </article>
     </div>
   </section>
@@ -566,24 +582,66 @@
       <div class="about-seal" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 4C12 4 6 7 6 14c0 3 2 5 5 6 5-1 8-6 9-16z"/><path d="M4 20c3-5 7-8 13-11"/></svg>
       </div>
-      <div class="about-label">Our purpose</div>
-      <h2>About AgriGuard</h2>
-      <p>AgriGuard helps tomato, potato, and pepper growers identify common leaf diseases early. It combines image-based analysis with practical treatment and prevention guidance, so farmers can make a faster first decision in the field.</p>
+      <div class="about-label" data-i18n="purpose">Our purpose</div>
+      <h2 data-i18n="aboutTitle">About AgriGuard</h2>
+      <p data-i18n="aboutText">AgriGuard helps tomato, potato, and pepper growers identify common leaf diseases early. It combines image-based analysis with practical treatment and prevention guidance, so farmers can make a faster first decision in the field.</p>
     </div>
     <div class="about-points">
-      <div class="about-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>Built for quick field checks</div>
-      <div class="about-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>Clear advice in simple language</div>
-      <div class="about-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>Nearby pesticide and fertilizer search</div>
+      <div class="about-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="point1">Built for quick field checks</span></div>
+      <div class="about-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="point2">Clear advice in simple language</span></div>
+      <div class="about-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="point3">Nearby pesticide and fertilizer search</span></div>
     </div>
   </section>
 </main>
 
 <script>
+  function openScanner() {
+    window.location.href = window.location.protocol === "file:" ? "index.html" : "/app";
+  }
+
+  const homeLanguageSelect = document.getElementById("homeLanguageSelect");
+  homeLanguageSelect.value = localStorage.getItem("agriGuardLanguage") || "en";
   const weatherLocation = document.getElementById("weatherLocation");
   const weatherStatus = document.getElementById("weatherStatus");
   const weatherIcon = document.getElementById("weatherIcon");
   const weatherTemperature = document.getElementById("weatherTemperature");
   const weatherDetails = document.getElementById("weatherDetails");
+  const homeTranslationCache = new Map();
+  const homeLanguageLocales = { en: "en-US", hi: "hi-IN", te: "te-IN", ta: "ta-IN", kn: "kn-IN" };
+  let currentWeatherDescription = "";
+  let currentWeatherLocation = "";
+  let currentWeatherDetails = "";
+
+  async function translateHomeText(text) {
+    const language = homeLanguageSelect.value;
+    if (!text || language === "en") return text;
+    const key = language + ":" + text;
+    if (homeTranslationCache.has(key)) return homeTranslationCache.get(key);
+    try {
+      const response = await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + language + "&dt=t&q=" + encodeURIComponent(text));
+      if (!response.ok) throw new Error("Translation request failed");
+      const parts = await response.json();
+      const translated = parts[0].map(part => part[0]).join("") || text;
+      homeTranslationCache.set(key, translated);
+      return translated;
+    } catch (error) {
+      return text;
+    }
+  }
+
+  async function applyHomeLanguage() {
+    document.documentElement.lang = homeLanguageSelect.value;
+    localStorage.setItem("agriGuardLanguage", homeLanguageSelect.value);
+    document.title = await translateHomeText("AgriGuard AI - Early Crop Disease Detection");
+    const elements = [...document.querySelectorAll("[data-i18n]")];
+    await Promise.all(elements.map(async element => {
+      if (!element.dataset.englishText) element.dataset.englishText = element.textContent;
+      element.textContent = await translateHomeText(element.dataset.englishText);
+    }));
+    if (currentWeatherLocation) weatherLocation.textContent = await translateHomeText(currentWeatherLocation);
+    if (currentWeatherDescription) weatherStatus.textContent = await translateHomeText(currentWeatherDescription);
+    if (currentWeatherDetails) weatherDetails.textContent = await translateHomeText(currentWeatherDetails);
+  }
 
   function weatherDescription(code) {
     if (code === 0) return ["☀️", "Clear sky"];
@@ -605,25 +663,33 @@
       const data = await response.json();
       const current = data.current;
       const [icon, description] = weatherDescription(current.weather_code);
-      weatherLocation.textContent = "Your live location";
-      weatherStatus.textContent = description;
+      currentWeatherLocation = "Your live location";
+      currentWeatherDescription = description;
+      currentWeatherDetails = `Humidity ${current.relative_humidity_2m}% · Wind ${Math.round(current.wind_speed_10m)} km/h`;
+      weatherLocation.textContent = await translateHomeText(currentWeatherLocation);
+      weatherStatus.textContent = await translateHomeText(description);
       weatherIcon.textContent = icon;
       weatherTemperature.textContent = `${Math.round(current.temperature_2m)}°C`;
-      weatherDetails.textContent = `Humidity ${current.relative_humidity_2m}% · Wind ${Math.round(current.wind_speed_10m)} km/h`;
+      weatherDetails.textContent = await translateHomeText(currentWeatherDetails);
     } catch (error) {
-      weatherLocation.textContent = "Weather unavailable";
-      weatherStatus.textContent = "Please check your internet connection and refresh.";
+      weatherLocation.textContent = await translateHomeText("Weather unavailable");
+      weatherStatus.textContent = await translateHomeText("Please check your internet connection and refresh.");
     }
   }
 
+  homeLanguageSelect.addEventListener("change", applyHomeLanguage);
+  applyHomeLanguage();
+
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(loadLiveWeather, () => {
-      weatherLocation.textContent = "Location permission needed";
-      weatherStatus.textContent = "Allow location access to load live weather.";
-    }, { enableHighAccuracy: false, maximumAge: 300000, timeout: 15000 });
+   navigator.geolocation.getCurrentPosition(loadLiveWeather, () => {
+     weatherLocation.textContent = "Location permission needed";
+     weatherStatus.textContent = "Allow location access to load live weather.";
+     applyHomeLanguage();
+   }, { enableHighAccuracy: false, maximumAge: 300000, timeout: 15000 });
   } else {
-    weatherLocation.textContent = "Location unavailable";
-    weatherStatus.textContent = "Your browser does not support live location.";
+   weatherLocation.textContent = "Location unavailable";
+   weatherStatus.textContent = "Your browser does not support live location.";
+   applyHomeLanguage();
   }
 </script>
 
@@ -631,23 +697,23 @@
   <div class="feature-grid">
     <div class="feature">
       <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
-      <h3>Fast &amp; Accurate</h3>
-      <p>Results in seconds from a single photo</p>
+      <h3 data-i18n="fastTitle">Fast &amp; Accurate</h3>
+      <p data-i18n="fastText">Results in seconds from a single photo</p>
     </div>
     <div class="feature">
       <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
-      <h3>Early Warning</h3>
-      <p>Spot infections before they spread</p>
+      <h3 data-i18n="earlyTitle">Early Warning</h3>
+      <p data-i18n="earlyText">Spot infections before they spread</p>
     </div>
     <div class="feature">
       <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
-      <h3>Trusted Guidance</h3>
-      <p>Clear treatment steps for each disease</p>
+      <h3 data-i18n="guidanceTitle">Trusted Guidance</h3>
+      <p data-i18n="guidanceText">Clear treatment steps for each disease</p>
     </div>
     <div class="feature">
       <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18M6 21V10l6-5 6 5v11"/></svg>
-      <h3>Protect Your Yield</h3>
-      <p>Act early and save more of your harvest</p>
+      <h3 data-i18n="yieldTitle">Protect Your Yield</h3>
+      <p data-i18n="yieldText">Act early and save more of your harvest</p>
     </div>
   </div>
 </div>

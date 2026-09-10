@@ -74,6 +74,17 @@
     border-bottom: 1px solid #eee9df;
     margin-bottom: 24px;
   }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .language-select {
+    width: auto;
+    min-width: 112px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--forest);
+    border-color: #d9ebdc;
+    background: #edf6ee;
+  }
   .app-brand { display: flex; align-items: center; gap: 10px; color: var(--forest); font-weight: 700; }
   .app-brand-mark {
     width: 38px;
@@ -394,6 +405,7 @@
     body { padding: 14px 10px; }
     .container { padding: 22px 18px; border-radius: 14px; }
     .app-header { align-items: flex-start; }
+    .header-actions { align-items: stretch; flex-direction: column; }
     .status-pill { font-size: 10px; padding: 6px 8px; }
     h1 { font-size: 25px; }
     .scan-controls { grid-template-columns: 1fr; gap: 10px; }
@@ -417,31 +429,40 @@
       </div>
       <span>AgriGuard AI</span>
     </div>
-    <div class="status-pill">Field scan ready</div>
+    <div class="header-actions">
+      <select id="languageSelect" class="language-select" aria-label="Choose language">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="te">తెలుగు</option>
+        <option value="ta">தமிழ்</option>
+        <option value="kn">ಕನ್ನಡ</option>
+      </select>
+      <div class="status-pill" data-i18n="statusReady">Field scan ready</div>
+    </div>
   </header>
-  <h1>Check your leaf health</h1>
-  <p class="subtitle">Upload a leaf photo to detect disease and get treatment advice</p>
+  <h1 data-i18n="title">Check your leaf health</h1>
+  <p class="subtitle" data-i18n="subtitle">Upload a leaf photo to detect disease and get treatment advice</p>
 
   <div class="scan-controls">
     <div class="control-panel">
-      <label for="cropType">Select Crop</label>
+      <label for="cropType"><span aria-hidden="true">🥕</span> <span data-i18n="selectCrop">Select Crop</span></label>
       <select id="cropType">
-        <option value="Tomato">Tomato</option>
-        <option value="Potato">Potato</option>
-        <option value="Pepper">Pepper</option>
+        <option value="Tomato" data-i18n="tomato">🍅 Tomato</option>
+        <option value="Potato" data-i18n="potato">🥔 Potato</option>
+        <option value="Pepper" data-i18n="pepper">🌶️ Pepper</option>
       </select>
     </div>
     <div class="control-panel">
-      <label for="imageInput">Upload Leaf Photo</label>
+      <label for="imageInput" data-i18n="uploadPhoto">Upload Leaf Photo</label>
       <input type="file" id="imageInput" accept="image/*">
     </div>
   </div>
 
   <img id="preview" alt="Preview">
 
-  <button id="submitBtn">Analyze Leaf</button>
+  <button id="submitBtn" data-i18n="analyze">Analyze Leaf</button>
 
-  <div id="loading"><div class="spinner"></div><span>Analyzing image, please wait...</span></div>
+  <div id="loading"><div class="spinner"></div><span data-i18n="analyzing">Analyzing image, please wait...</span></div>
   <div id="error"></div>
 
   <div id="result">
@@ -455,13 +476,13 @@
           </div>
           <div class="severity-line" id="severityLine">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-            <span id="severityWord"></span> risk
+            <span id="severityWord"></span> <span data-i18n="risk">risk</span>
           </div>
 
           <div class="section">
             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
             <div class="section-body">
-              <div class="section-title">What this is</div>
+              <div class="section-title" data-i18n="overviewTitle">What this is</div>
               <div class="section-text" id="overviewText"></div>
             </div>
           </div>
@@ -469,7 +490,7 @@
           <div class="section">
             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
             <div class="section-body">
-              <div class="section-title">Effect on your crop</div>
+              <div class="section-title" data-i18n="impactTitle">Effect on your crop</div>
               <div class="section-text" id="impactText"></div>
             </div>
           </div>
@@ -477,7 +498,7 @@
           <div class="section">
             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17.5 19a4.5 4.5 0 1 0-1.44-8.76 6 6 0 0 0-11.4 2.26A4 4 0 0 0 5.5 20h12z"/></svg>
             <div class="section-body">
-              <div class="section-title">Weather that makes it worse</div>
+              <div class="section-title" data-i18n="weatherTitle">Weather that makes it worse</div>
               <div class="section-text" id="weatherText"></div>
               <ul class="weather-advice" id="weatherAdvice"></ul>
             </div>
@@ -486,7 +507,7 @@
           <div class="section">
             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6v4H9zM12 7v14M8 12h8"/></svg>
             <div class="section-body">
-              <div class="section-title">What to spray</div>
+              <div class="section-title" data-i18n="sprayTitle">What to spray</div>
               <div class="section-text" id="treatmentText"></div>
             </div>
           </div>
@@ -494,7 +515,7 @@
           <div class="section">
             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M3 12h18M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>
             <div class="section-body">
-              <div class="section-title">Management tips</div>
+              <div class="section-title" data-i18n="managementTitle">Management tips</div>
               <ul class="prevention-list" id="managementList"></ul>
             </div>
           </div>
@@ -502,7 +523,7 @@
           <div class="section">
             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
             <div class="section-body">
-              <div class="section-title">When and how to use chemicals</div>
+              <div class="section-title" data-i18n="chemicalTitle">When and how to use chemicals</div>
               <div class="section-text" id="chemicalUseText"></div>
             </div>
           </div>
@@ -510,7 +531,7 @@
           <div class="section">
             <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
             <div class="section-body">
-              <div class="section-title">How to prevent it next time</div>
+              <div class="section-title" data-i18n="preventionTitle">How to prevent it next time</div>
               <ul class="prevention-list" id="preventionList"></ul>
             </div>
           </div>
@@ -518,12 +539,12 @@
           <div class="shop-finder">
             <div class="shop-finder-header">
               <div>
-                <div class="shop-finder-title">Pesticide and fertilizer shops nearby</div>
-                <div class="shop-finder-subtitle">Find pesticide, fertilizer, and agrochemical suppliers within 10 km.</div>
+                <div class="shop-finder-title" data-i18n="shopsTitle">Pesticide and fertilizer shops nearby</div>
+                <div class="shop-finder-subtitle" data-i18n="shopsSubtitle">Find pesticide, fertilizer, and agrochemical suppliers within 10 km.</div>
               </div>
-              <button id="locationButton" type="button">Find shops near me</button>
+              <button id="locationButton" type="button" data-i18n="findShops">Find shops near me</button>
             </div>
-            <div id="shopStatus">Allow location access to search nearby shops.</div>
+            <div id="shopStatus" data-i18n="allowLocation">Allow location access to search nearby shops.</div>
             <div id="shopMap" aria-label="Map of pesticide and fertilizer shops near me"></div>
             <div id="shopList"></div>
             <div id="shopFallback"></div>
@@ -536,7 +557,8 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const isLocalPreview = ["localhost", "127.0.0.1"].includes(window.location.hostname) && window.location.port !== "5000";
+  const isLocalPreview = window.location.protocol === "file:" ||
+    (["localhost", "127.0.0.1"].includes(window.location.hostname) && window.location.port !== "5000");
   const API_URL = isLocalPreview ? "http://127.0.0.1:5000/predict" : "/predict";
 
   const imageInput = document.getElementById("imageInput");
@@ -563,9 +585,124 @@
   const shopMap = document.getElementById("shopMap");
   const shopList = document.getElementById("shopList");
   const shopFallback = document.getElementById("shopFallback");
+  const languageSelect = document.getElementById("languageSelect");
+  languageSelect.value = localStorage.getItem("agriGuardLanguage") || "en";
   let map;
   let shopMarkers;
   let currentTreatment = "";
+  let lastResult = null;
+
+  const translations = {
+    en: {
+      statusReady: "Field scan ready", title: "Check your leaf health", subtitle: "Upload a leaf photo to detect disease and get treatment advice", selectCrop: "Select Crop", tomato: "🍅 Tomato", potato: "🥔 Potato", pepper: "🌶️ Pepper", uploadPhoto: "Upload Leaf Photo", analyze: "Analyze Leaf", analyzing: "Analyzing image, please wait...", risk: "risk", overviewTitle: "What this is", impactTitle: "Effect on your crop", weatherTitle: "Weather that makes it worse", sprayTitle: "What to spray", managementTitle: "Management tips", chemicalTitle: "When and how to use chemicals", preventionTitle: "How to prevent it next time", shopsTitle: "Pesticide and fertilizer shops nearby", shopsSubtitle: "Find pesticide, fertilizer, and agrochemical suppliers within 10 km.", findShops: "Find shops near me", allowLocation: "Allow location access to search nearby shops.", confidence: "confidence", noRisk: "No"
+    },
+    hi: {
+      statusReady: "फील्ड स्कैन तैयार", title: "अपने पत्ते का स्वास्थ्य जांचें", subtitle: "रोग का पता लगाने और उपचार की सलाह पाने के लिए पत्ते की फोटो अपलोड करें", selectCrop: "फसल चुनें", tomato: "🍅 टमाटर", potato: "🥔 आलू", pepper: "🌶️ मिर्च", uploadPhoto: "पत्ते की फोटो अपलोड करें", analyze: "पत्ते की जांच करें", analyzing: "फोटो की जांच हो रही है, कृपया प्रतीक्षा करें...", risk: "जोखिम", overviewTitle: "यह क्या है", impactTitle: "आपकी फसल पर प्रभाव", weatherTitle: "इसे बढ़ाने वाला मौसम", sprayTitle: "क्या छिड़कें", managementTitle: "प्रबंधन सुझाव", chemicalTitle: "रसायनों का उपयोग कब और कैसे करें", preventionTitle: "अगली बार इसे कैसे रोकें", shopsTitle: "आस-पास की कीटनाशक और खाद की दुकानें", shopsSubtitle: "10 किमी के अंदर कीटनाशक, खाद और कृषि सामग्री विक्रेता खोजें।", findShops: "मेरे पास दुकानें खोजें", allowLocation: "आस-पास की दुकानों को खोजने के लिए स्थान की अनुमति दें।", confidence: "विश्वसनीयता", noRisk: "कोई नहीं"
+    },
+    te: {
+      statusReady: "ఫీల్డ్ స్కాన్ సిద్ధంగా ఉంది", title: "మీ ఆకుల ఆరోగ్యాన్ని పరిశీలించండి", subtitle: "వ్యాధిని గుర్తించి చికిత్స సలహా పొందడానికి ఆకు ఫోటోను అప్‌లోడ్ చేయండి", selectCrop: "పంటను ఎంచుకోండి", tomato: "🍅 టమాటా", potato: "🥔 బంగాళాదుంప", pepper: "🌶️ మిరప", uploadPhoto: "ఆకు ఫోటోను అప్‌లోడ్ చేయండి", analyze: "ఆకును విశ్లేషించండి", analyzing: "చిత్రాన్ని విశ్లేషిస్తున్నాం, దయచేసి వేచి ఉండండి...", risk: "ప్రమాదం", overviewTitle: "ఇది ఏమిటి", impactTitle: "మీ పంటపై ప్రభావం", weatherTitle: "దీనిని పెంచే వాతావరణం", sprayTitle: "ఏమి పిచికారీ చేయాలి", managementTitle: "నిర్వహణ సూచనలు", chemicalTitle: "రసాయనాలను ఎప్పుడు మరియు ఎలా వాడాలి", preventionTitle: "తదుపరి సారి దీనిని ఎలా నివారించాలి", shopsTitle: "సమీపంలోని పురుగుమందు మరియు ఎరువుల దుకాణాలు", shopsSubtitle: "10 కిలోమీటర్లలోపు పురుగుమందు, ఎరువు మరియు వ్యవసాయ సరఫరాదారులను కనుగొనండి.", findShops: "నా సమీపంలోని దుకాణాలను కనుగొనండి", allowLocation: "సమీప దుకాణాలను వెతకడానికి స్థాన అనుమతిని ఇవ్వండి.", confidence: "నమ్మకం", noRisk: "ఏమీ లేదు"
+    },
+    ta: {
+      statusReady: "வயல் ஸ்கேன் தயார்", title: "உங்கள் இலை ஆரோக்கியத்தைச் சரிபார்க்கவும்", subtitle: "நோயைக் கண்டறிந்து சிகிச்சை ஆலோசனை பெற இலைப் புகைப்படத்தைப் பதிவேற்றவும்", selectCrop: "பயிரைத் தேர்ந்தெடுக்கவும்", tomato: "🍅 தக்காளி", potato: "🥔 உருளைக்கிழங்கு", pepper: "🌶️ மிளகாய்", uploadPhoto: "இலைப் புகைப்படத்தைப் பதிவேற்றவும்", analyze: "இலையை ஆய்வு செய்யவும்", analyzing: "படம் ஆய்வு செய்யப்படுகிறது, காத்திருக்கவும்...", risk: "ஆபத்து", overviewTitle: "இது என்ன", impactTitle: "உங்கள் பயிரில் தாக்கம்", weatherTitle: "இதை மோசமாக்கும் வானிலை", sprayTitle: "எதைத் தெளிக்க வேண்டும்", managementTitle: "மேலாண்மை குறிப்புகள்", chemicalTitle: "ரசாயனங்களை எப்போது, எப்படி பயன்படுத்துவது", preventionTitle: "அடுத்த முறை இதைத் தடுப்பது எப்படி", shopsTitle: "அருகிலுள்ள பூச்சிக்கொல்லி மற்றும் உரக் கடைகள்", shopsSubtitle: "10 கி.மீ.க்குள் பூச்சிக்கொல்லி, உரம் மற்றும் வேளாண் விற்பனையாளர்களைக் கண்டறியவும்.", findShops: "அருகிலுள்ள கடைகளைக் கண்டறியவும்", allowLocation: "அருகிலுள்ள கடைகளைத் தேட இருப்பிட அனுமதியை வழங்கவும்.", confidence: "நம்பிக்கை", noRisk: "இல்லை"
+    },
+    kn: {
+      statusReady: "ಕ್ಷೇತ್ರ ಸ್ಕ್ಯಾನ್ ಸಿದ್ಧವಾಗಿದೆ", title: "ನಿಮ್ಮ ಎಲೆಯ ಆರೋಗ್ಯ ಪರಿಶೀಲಿಸಿ", subtitle: "ರೋಗ ಪತ್ತೆಹಚ್ಚಲು ಮತ್ತು ಚಿಕಿತ್ಸೆಯ ಸಲಹೆ ಪಡೆಯಲು ಎಲೆಯ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ", selectCrop: "ಬೆಳೆ ಆಯ್ಕೆಮಾಡಿ", tomato: "🍅 ಟೊಮೆಟೊ", potato: "🥔 ಆಲೂಗಡ್ಡೆ", pepper: "🌶️ ಮೆಣಸು", uploadPhoto: "ಎಲೆಯ ಚಿತ್ರ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ", analyze: "ಎಲೆಯನ್ನು ವಿಶ್ಲೇಷಿಸಿ", analyzing: "ಚಿತ್ರವನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ, ದಯವಿಟ್ಟು ಕಾಯಿರಿ...", risk: "ಅಪಾಯ", overviewTitle: "ಇದು ಏನು", impactTitle: "ನಿಮ್ಮ ಬೆಳೆಯ ಮೇಲೆ ಪರಿಣಾಮ", weatherTitle: "ಇದನ್ನು ಹೆಚ್ಚಿಸುವ ಹವಾಮಾನ", sprayTitle: "ಏನು ಸಿಂಪಡಿಸಬೇಕು", managementTitle: "ನಿರ್ವಹಣಾ ಸಲಹೆಗಳು", chemicalTitle: "ರಾಸಾಯನಿಕಗಳನ್ನು ಯಾವಾಗ ಮತ್ತು ಹೇಗೆ ಬಳಸಬೇಕು", preventionTitle: "ಮುಂದಿನ ಬಾರಿ ಇದನ್ನು ತಡೆಯುವುದು ಹೇಗೆ", shopsTitle: "ಹತ್ತಿರದ ಕೀಟನಾಶಕ ಮತ್ತು ಗೊಬ್ಬರದ ಅಂಗಡಿಗಳು", shopsSubtitle: "10 ಕಿ.ಮೀ. ಒಳಗೆ ಕೀಟನಾಶಕ, ಗೊಬ್ಬರ ಮತ್ತು ಕೃಷಿ ಪೂರೈಕೆದಾರರನ್ನು ಹುಡುಕಿ.", findShops: "ನನ್ನ ಹತ್ತಿರದ ಅಂಗಡಿಗಳನ್ನು ಹುಡುಕಿ", allowLocation: "ಹತ್ತಿರದ ಅಂಗಡಿಗಳನ್ನು ಹುಡುಕಲು ಸ್ಥಳದ ಅನುಮತಿ ನೀಡಿ.", confidence: "ವಿಶ್ವಾಸ", noRisk: "ಯಾವುದೂ ಇಲ್ಲ"
+    }
+  };
+
+  function currentLanguage() { return languageSelect.value; }
+
+  function applyLanguage() {
+    const language = translations[currentLanguage()];
+    document.documentElement.lang = currentLanguage();
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+      element.textContent = language[element.dataset.i18n] || translations.en[element.dataset.i18n];
+    });
+  }
+
+  const translationCache = new Map();
+  function t(key) {
+    return translations[currentLanguage()][key] || translations.en[key] || key;
+  }
+
+  async function translateText(text) {
+    if (!text || currentLanguage() === "en") return text;
+    const key = currentLanguage() + ":" + text;
+    if (translationCache.has(key)) return translationCache.get(key);
+    try {
+      const response = await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + currentLanguage() + "&dt=t&q=" + encodeURIComponent(text));
+      const parts = await response.json();
+      const translated = parts[0].map(part => part[0]).join("") || text;
+      translationCache.set(key, translated);
+      return translated;
+    } catch (error) {
+      return text;
+    }
+
+    async function setTranslatedText(element, text) {
+      element.textContent = await translateText(text);
+    }
+  }
+
+  async function translateResult(data) {
+    if (currentLanguage() === "en") return data;
+    const translated = { ...data };
+    translated.diseaseName = await translateText(data.disease.replace(/___/g, " - ").replace(/_/g, " "));
+    for (const field of ["overview", "impact", "favorable_conditions", "chemical_treatment", "chemical_use"]) translated[field] = await translateText(data[field] || "-");
+    for (const field of ["weather_advice", "management_tips", "prevention"]) translated[field] = await Promise.all((data[field] || []).map(translateText));
+    return translated;
+  }
+
+  async function renderResult(data) {
+    const severity = data.severity || "None";
+    stripBar.className = "strip-bar " + severity;
+    severityLine.className = "severity-line " + severity;
+    severityWord.textContent = severity === "None" ? t("noRisk") : severity;
+    diseaseName.textContent = data.diseaseName || data.disease.replace(/___/g, " - ").replace(/_/g, " ");
+    confidenceText.textContent = data.confidence + "% " + t("confidence");
+    overviewText.textContent = data.overview || "-";
+    impactText.textContent = data.impact || "-";
+    weatherText.textContent = data.favorable_conditions || "-";
+    weatherAdvice.innerHTML = "";
+    (data.weather_advice || []).forEach(advice => {
+      const li = document.createElement("li");
+      li.textContent = advice;
+      weatherAdvice.appendChild(li);
+    });
+    treatmentText.textContent = data.chemical_treatment || "-";
+    managementList.innerHTML = "";
+    (data.management_tips || []).forEach(tip => {
+      const li = document.createElement("li");
+      li.textContent = tip;
+      managementList.appendChild(li);
+    });
+    chemicalUseText.textContent = data.chemical_use || "-";
+    currentTreatment = data.chemical_treatment || "the recommended treatment";
+    shopStatus.textContent = t("allowLocation");
+    shopMap.style.display = "none";
+    shopList.innerHTML = "";
+    shopFallback.style.display = "none";
+    preventionList.innerHTML = "";
+    (data.prevention || []).forEach(step => {
+      const li = document.createElement("li");
+      li.textContent = step;
+      preventionList.appendChild(li);
+    });
+    resultBox.style.display = "none";
+    resultBox.offsetHeight;
+    resultBox.style.display = "block";
+  }
+
+  languageSelect.addEventListener("change", async () => {
+    localStorage.setItem("agriGuardLanguage", currentLanguage());
+    applyLanguage();
+    if (lastResult) {
+      const original = lastResult.original || lastResult;
+      lastResult = { original, ...(await translateResult(original)) };
+      renderResult(lastResult);
+    }
+  });
+  applyLanguage();
 
   imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
@@ -643,11 +780,11 @@
 
   async function findNearbyShops() {
     if (!navigator.geolocation) {
-      shopStatus.textContent = "Location is not available in this browser.";
+      await setTranslatedText(shopStatus, "Location is not available in this browser.");
       showShopFallback();
       return;
     }
-    shopStatus.textContent = "Getting your location and searching within 10 km...";
+    await setTranslatedText(shopStatus, "Getting your location and searching within 10 km...");
     locationButton.disabled = true;
     const searchAtLocation = async (latitude, longitude, locationSource) => {
       const query = `[out:json][timeout:10];(nwr[shop~"^(agrarian|garden_centre|farm|farm_supply)$"](around:10000,${latitude},${longitude});nwr["name"~"pesticides?|agrochemical|agro|agri|fertilizers?|fertilisers?|farm supply|seed|krishi|nursery|crop care",i](around:10000,${latitude},${longitude}););out center tags qt;`;
@@ -677,9 +814,9 @@
           return Number.isFinite(shopLat) && Number.isFinite(shopLon) && distanceBetween(latitude, longitude, shopLat, shopLon) <= 10000;
         }).length || 0;
         shopFallback.style.display = nearbyCount ? "none" : "block";
-        shopStatus.textContent = nearbyCount ? `Showing ${nearbyCount} pesticide and fertilizer shop${nearbyCount === 1 ? "" : "s"} within 10 km${locationSource === "approximate" ? " of your approximate location" : ""}.` : "No pesticide or fertilizer shops were found within 10 km.";
+        await setTranslatedText(shopStatus, nearbyCount ? `Showing ${nearbyCount} pesticide and fertilizer shop${nearbyCount === 1 ? "" : "s"} within 10 km${locationSource === "approximate" ? " of your approximate location" : ""}.` : "No pesticide or fertilizer shops were found within 10 km.");
       } catch (error) {
-        shopStatus.textContent = "Map search is unavailable right now. Use the nearby shops link below.";
+        await setTranslatedText(shopStatus, "Map search is unavailable right now. Use the nearby shops link below.");
         showShopFallback(latitude, longitude);
       }
     };
@@ -694,7 +831,7 @@
         if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) throw new Error("Invalid approximate location");
         await searchAtLocation(latitude, longitude, "approximate");
       } catch (error) {
-        shopStatus.textContent = "Location permission is needed to show shops within 10 km.";
+        await setTranslatedText(shopStatus, "Location permission is needed to show shops within 10 km.");
         showShopFallback();
       } finally {
         locationButton.disabled = false;
@@ -718,7 +855,7 @@
     resultBox.style.display = "none";
 
     if (!file) {
-      errorBox.textContent = "Please select an image first.";
+      await setTranslatedText(errorBox, "Please select an image first.");
       errorBox.style.display = "block";
       return;
     }
@@ -748,56 +885,16 @@
       }
 
       if (data.error === "crop_mismatch" || data.error === "not_a_leaf") {
-        errorBox.textContent = data.message;
+        await setTranslatedText(errorBox, data.message);
         errorBox.style.display = "block";
         return;
       }
 
-      const severity = data.severity || "None";
-
-      stripBar.className = "strip-bar " + severity;
-      severityLine.className = "severity-line " + severity;
-      severityWord.textContent = severity === "None" ? "No" : severity;
-
-      diseaseName.textContent = data.disease.replace(/___/g, " - ").replace(/_/g, " ");
-      confidenceText.textContent = data.confidence + "% confidence";
-
-      overviewText.textContent = data.overview || "-";
-      impactText.textContent = data.impact || "-";
-      weatherText.textContent = data.favorable_conditions || "-";
-      weatherAdvice.innerHTML = "";
-      (data.weather_advice || []).forEach(advice => {
-        const li = document.createElement("li");
-        li.textContent = advice;
-        weatherAdvice.appendChild(li);
-      });
-      treatmentText.textContent = data.chemical_treatment || "-";
-      managementList.innerHTML = "";
-      (data.management_tips || []).forEach(tip => {
-        const li = document.createElement("li");
-        li.textContent = tip;
-        managementList.appendChild(li);
-      });
-      chemicalUseText.textContent = data.chemical_use || "Follow the product label and local agricultural guidance.";
-      currentTreatment = data.chemical_treatment || "the recommended treatment";
-      shopStatus.textContent = "Allow location access to search nearby shops for this treatment.";
-      shopMap.style.display = "none";
-      shopList.innerHTML = "";
-      shopFallback.style.display = "none";
-
-      preventionList.innerHTML = "";
-      (data.prevention || []).forEach(step => {
-        const li = document.createElement("li");
-        li.textContent = step;
-        preventionList.appendChild(li);
-      });
-
-      resultBox.style.display = "none";
-      resultBox.offsetHeight; // reflow to restart animation
-      resultBox.style.display = "block";
+      lastResult = { original: data, ...(await translateResult(data)) };
+      await renderResult(lastResult);
       findNearbyShops();
     } catch (err) {
-      errorBox.textContent = "Error: " + err.message;
+      await setTranslatedText(errorBox, "Error: " + err.message);
       errorBox.style.display = "block";
     } finally {
       submitBtn.disabled = false;
