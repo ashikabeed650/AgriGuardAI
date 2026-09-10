@@ -39,6 +39,10 @@ CROP_DEFINITIONS = {
         'Tomato___Septoria_leaf_spot',
         'Tomato___healthy',
     ],
+    "Pepper": [
+        'Pepper__bell___Bacterial_spot',
+        'Pepper__bell___healthy',
+    ],
 }
 
 class_names = [label for labels in CROP_DEFINITIONS.values() for label in labels]
