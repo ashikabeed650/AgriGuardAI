@@ -12,17 +12,30 @@ from PIL import Image
 
 SEED = 42
 IMAGE_SIZE = (224, 224)
-CLASS_NAMES = [
-    "Potato___Early_blight",
-    "Potato___Late_blight",
-    "Potato___healthy",
-    "Tomato___Bacterial_spot",
-    "Tomato___Early_blight",
-    "Tomato___Late_blight",
-    "Tomato___Leaf_Mold",
-    "Tomato___Septoria_leaf_spot",
-    "Tomato___healthy",
-]
+
+# Add new vegetables here as soon as you have a trained dataset for them.
+# The project will automatically derive the class list and folder mapping from this config.
+CROP_DEFINITIONS = {
+    "Potato": [
+        "Potato___Early_blight",
+        "Potato___Late_blight",
+        "Potato___healthy",
+    ],
+    "Tomato": [
+        "Tomato___Bacterial_spot",
+        "Tomato___Early_blight",
+        "Tomato___Late_blight",
+        "Tomato___Leaf_Mold",
+        "Tomato___Septoria_leaf_spot",
+        "Tomato___healthy",
+    ],
+    "Pepper": [
+        "Pepper__bell___Bacterial_spot",
+        "Pepper__bell___healthy",
+    ],
+}
+
+CLASS_NAMES = [label for crop_labels in CROP_DEFINITIONS.values() for label in crop_labels]
 DATASET_FOLDERS = {
     "Potato___Early_blight": "Potato___Early_blight",
     "Potato___Late_blight": "Potato___Late_blight",
@@ -33,6 +46,8 @@ DATASET_FOLDERS = {
     "Tomato___Leaf_Mold": "Tomato_Leaf_Mold",
     "Tomato___Septoria_leaf_spot": "Tomato_Septoria_leaf_spot",
     "Tomato___healthy": "Tomato_healthy",
+    "Pepper__bell___Bacterial_spot": "Pepper__bell___Bacterial_spot",
+    "Pepper__bell___healthy": "Pepper__bell___healthy",
 }
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
@@ -133,7 +148,11 @@ def main() -> None:
 
     model = tf.keras.models.load_model(args.base_model, compile=False)
     if model.output_shape[-1] != len(CLASS_NAMES):
-        raise ValueError(f"Expected {len(CLASS_NAMES)} outputs, found {model.output_shape[-1]}")
+        print(f"Base model has {model.output_shape[-1]} outputs; replacing final classification head with {len(CLASS_NAMES)} classes.")
+        inputs = model.input
+        x = model.layers[-2].output
+        outputs = tf.keras.layers.Dense(len(CLASS_NAMES), activation="softmax", name="new_classification_head")(x)
+        model = tf.keras.Model(inputs=inputs, outputs=outputs, name=model.name)
 
     for layer in model.layers:
         layer.trainable = False
