@@ -591,6 +591,7 @@
   let shopMarkers;
   let currentTreatment = "";
   let lastResult = null;
+  let previewUrl = "";
 
   const translations = {
     en: {
@@ -639,9 +640,10 @@
       return text;
     }
 
-    async function setTranslatedText(element, text) {
-      element.textContent = await translateText(text);
-    }
+  }
+
+  async function setTranslatedText(element, text) {
+    element.textContent = await translateText(text);
   }
 
   async function translateResult(data) {
@@ -704,11 +706,23 @@
   });
   applyLanguage();
 
+  imageInput.addEventListener("click", () => {
+    imageInput.value = "";
+  });
+
   imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
     if (file) {
-      preview.src = URL.createObjectURL(file);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(file);
+      preview.src = previewUrl;
       preview.style.display = "block";
+      lastResult = null;
+      errorBox.style.display = "none";
+      resultBox.style.display = "none";
+      shopMap.style.display = "none";
+      shopList.innerHTML = "";
+      shopFallback.style.display = "none";
     }
   });
 
@@ -880,14 +894,17 @@
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
-      }
-
       if (data.error === "crop_mismatch" || data.error === "not_a_leaf") {
-        await setTranslatedText(errorBox, data.message);
+        const message = data.error === "crop_mismatch"
+          ? "Please upload the correct image for the selected crop."
+          : "Please upload the correct image: a clear tomato, potato, or pepper leaf photo.";
+        await setTranslatedText(errorBox, message);
         errorBox.style.display = "block";
         return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong");
       }
 
       lastResult = { original: data, ...(await translateResult(data)) };

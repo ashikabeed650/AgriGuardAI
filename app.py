@@ -310,7 +310,10 @@ def looks_like_leaf(img_array):
     b = img[:, :, 2]
     exg = 2 * g - r - b
     green_pixel_ratio = np.mean(exg > 15)
-    return green_pixel_ratio > 0.12
+    green_pixels = g[exg > 15]
+    green_texture = np.std(green_pixels) if green_pixels.size else 0
+    skin_pixel_ratio = np.mean((r > 80) & (r > g * 1.15) & (g > b * 1.1))
+    return 0.12 < green_pixel_ratio < 0.78 and green_texture > 12 and skin_pixel_ratio < 0.035
 
 @app.route('/', methods=['GET'])
 def home():
@@ -343,7 +346,7 @@ def predict():
     if not looks_like_leaf(img_array):
         return jsonify({
             "error": "not_a_leaf",
-            "message": "This doesn't look like a plant leaf photo. Please upload a clear tomato, potato, or pepper leaf photo."
+            "message": "Please upload the correct image: a clear tomato, potato, or pepper leaf photo."
         }), 200
 
     prediction = predict_tflite(img_array)
@@ -357,7 +360,7 @@ def predict():
     if detected_crop != crop_type:
         return jsonify({
             "error": "crop_mismatch",
-            "message": f"This photo looks like a {detected_crop} leaf, but you selected {crop_type}. Please upload a clear {crop_type} leaf photo.",
+            "message": f"Upload the correct image for the selected crop. This photo looks like a {detected_crop} leaf, but you selected {crop_type}.",
             "detected_crop_guess": detected_crop
         }), 200
 
